@@ -30,9 +30,9 @@ def newCatalog():
     """
     Este indice crea un map cuya llave es el autor del libro
     """
-    catalog['artworks'] = mp.newMap(2000,
+    catalog['artworks'] = mp.newMap(1000,
                                    maptype='PROBING',
-                                   loadfactor=2.0,
+                                   loadfactor=0.5,
                                    )
 
     return catalog

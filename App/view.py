@@ -322,7 +322,7 @@ while True:
     elif int(inputs) == 100:
         Medium=input("Por favor ingreso el medio o tecnica de interes: ")
         MediumImportantREQLab5,SizeOfList=controller.REQLab5(catalog,Medium)
-        print(Medium+" tiene "+str(SizeOfList)+"obras en total")
+        print(Medium+" tiene "+str(SizeOfList)+" obras en total")
         print("Las 3 obras mas antiguas son las siguientes:")
         print(printFirst(MediumImportantREQLab5,3))
 
