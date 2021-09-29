@@ -31,22 +31,21 @@ def loadData(catalog, file_size):
     """
     Carga los datos de los archivos y los ordena
     """
-    loadArtists(catalog, file_size)
+    #loadArtists(catalog, file_size)
     loadArtworks(catalog, file_size)
 
-    sortArtists(catalog, model.cmpArtistByBeginDate)
-    sortArtworks(catalog, model.cmpArtworkByDateAcquired)
+    #sortArtists(catalog, model.cmpArtistByBeginDate)
+    #sortArtworks(catalog, model.cmpArtworkByDateAcquired)
 
 
+"""
 def loadArtists(catalog, file_size):
-    """
-    Carga los artistas del archivo
-    """
+    
     artistsfile = cf.data_dir + 'Artists-utf8-' + file_size + '.csv'
     input_file = csv.DictReader(open(artistsfile, encoding='utf-8'))
     for artist in input_file:
         model.addArtist(catalog, artist)
-
+"""
 
 def loadArtworks(catalog, file_size):
     """
@@ -56,25 +55,27 @@ def loadArtworks(catalog, file_size):
     artworksfile = cf.data_dir + 'Artworks-utf8-' + file_size + '.csv'
     input_file = csv.DictReader(open(artworksfile, encoding='utf-8'))
     for artwork in input_file:
-        model.addArtwork(catalog, artwork)
+        model.AddMediumLab5(catalog, artwork)
 
 
 # Funciones de ordenamiento
 
-def sortArtists(catalog, cmpfunction=model.cmpArtistByBeginDate):
+#def sortArtists(catalog, cmpfunction=model.cmpArtistByBeginDate):
     """
     Ordena los artistas según la función de comparación dada
     """
-    model.sortArtists(catalog, cmpfunction)
+    #model.sortArtists(catalog, cmpfunction)
 
 
-def sortArtworks(catalog, cmpfunction):
+#def sortArtworks(catalog, cmpfunction):
     """
     Ordena las obras según la función de comparación dada
     """
-    model.sortArtworks(catalog, cmpfunction)
+    #model.sortArtworks(catalog, cmpfunction)
 
-
+#Funciones de Lab 5
+def REQLab5(catalog,Medium):
+    return model.REQLab5(catalog,Medium)
 # Funciones de consulta sobre el catálogo
 
 

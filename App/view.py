@@ -52,8 +52,8 @@ def loadData(catalog, file_size):
     controller.loadData(catalog, file_size)
 
 
-"""
-FUNCIONES DEL RETO 1
+
+#FUNCIONES DEL RETO 1
 
 def printFirst(lst, num):
     """
@@ -62,7 +62,7 @@ def printFirst(lst, num):
     for pos in range(1,num+1):
         print(lt.getElement(lst, pos))
         print("")
-
+""""
 
 def printLast(lst, num):
     """
@@ -294,6 +294,7 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
 
+    
 
     if int(inputs) == 1:
         #file_size = input("Ingrese el sufijo del archivo que desea utilizar (small, large, 10pct...): ")
@@ -311,7 +312,6 @@ while True:
 
         print("\nTiempo de carga: " + str(running_time) + " milisegundos")
 
-        print('Artistas cargados: ' + str(lt.size(catalog['artists'])))
         print('Obras cargadas: ' + str(lt.size(catalog['artworks'])))
         #print("\nÚltimos 3 artistas:")
         #printLast(catalog["artists"], 3)
@@ -320,7 +320,11 @@ while True:
 
 
     elif int(inputs) == 100:
-        print("Temporalmente no disponible...")
+        Medium=input("Por favor ingreso el medio o tecnica de interes: ")
+        MediumImportantREQLab5,SizeOfList=controller.REQLab5(catalog,Medium)
+        print(Medium+" tiene "+str(SizeOfList)+"obras en total")
+        print("Las 3 obras mas antiguas son las siguientes:")
+        print(printFirst(MediumImportantREQLab5,3))
 
 
     else:

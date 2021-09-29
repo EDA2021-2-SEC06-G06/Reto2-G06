@@ -9,6 +9,8 @@ Daniel Hernández Pineda
 
 import config as cf
 from DISClib.ADT import list as lt
+from DISClib.ADT import map as mp
+from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import queue
 from DISClib.ADT import stack
 from DISClib.Algorithms.Sorting import shellsort as sso
@@ -22,34 +24,47 @@ def newCatalog():
     """
     Inicializa el catálogo de obras y artistas
     """
-    catalog = {"artists": None,
-               "artworks": None}
+    catalog = {"artworks": None}
 
-    catalog["artists"] = lt.newList("ARRAY_LIST")
-    catalog["artworks"] = lt.newList("ARRAY_LIST")
+
+    """
+    Este indice crea un map cuya llave es el autor del libro
+    """
+    catalog['artworks'] = mp.newMap(2000,
+                                   maptype='PROBING',
+                                   loadfactor=2.0,
+                                   )
 
     return catalog
 
-
+# ==============================================
 # Funciones para agregar informacion al catalogo
+# ============================================
+def newArtworksLab5(title, date, Medium):
+    DataNecessary = {'Title': '',
+           'Date': '',
+           'Medium':'',
+                    }
+    DataNecessary['Title']=title
+    DataNecessary['Date']=date
+    DataNecessary['Medium']=Medium
+    return DataNecessary
 
-def addArtist(catalog, artist):
-    """
-    Se adiciona el artista a la lista de artistas
-    """
-    Arti_r=artists_required(artist["ConstituentID"],
-                            artist["DisplayName"],
-                            artist["BeginDate"],
-                            artist["EndDate"],
-                            artist["Nationality"],
-                            artist["Gender"])
-    lt.addLast(catalog['artists'], Arti_r)
+def AddMediumLab5(catalog, artwork):
+    "Los datos tienen la siguiente forma: 'key'= Medium, 'value' = Title, Date"
     
+    DataForMedium=newArtworksLab5(artwork['Title'],artwork['Date'],artwork['Medium'])
+    mp.put(catalog['artworks'],artwork['ObjectID'],DataForMedium)
 
+
+
+
+ 
+""""
 def addArtwork(catalog, artwork):
-    """
+    
     Se adiciona la obra a la lista de obras
-    """
+    
     Artw_r=artworks_required(artwork["ObjectID"],
                             artwork["Title"],
                             artwork["ConstituentID"],
@@ -72,7 +87,7 @@ def addArtwork(catalog, artwork):
 
     lt.addLast(catalog['artworks'], Artw_r)
 
-
+"""
 # Funciones para creacion de datos
 
 def splitAuthorsIDs(authorsIDs):
@@ -166,7 +181,9 @@ def artworks_required(artworkID,title,artistID,date,medium,dimensions,
     return artwork
 
 
+# ==============================================
 # Funciones de consulta
+# ============================================
 
 def binary_search(lst, value, lowercmpfunction, greatercmpfunction):
     """
@@ -192,6 +209,19 @@ def binary_search(lst, value, lowercmpfunction, greatercmpfunction):
             return mid
  
     return -1
+
+def REQLab5(catalog,Medium):
+    ArtworksMoreOld=lt.newList()
+    MediumOfCatalog=catalog["artworks"]
+    for n in lt.iterator(mp.keySet(MediumOfCatalog)):
+        DataAtMoment=mp.get(MediumOfCatalog,n)
+        ValueAtMoment=me.getValue(DataAtMoment)
+        MediumAtMoment=ValueAtMoment['Medium']
+        if MediumAtMoment==Medium:
+            lt.addLast(ArtworksMoreOld,ValueAtMoment)
+    sortMediumDate(ArtworksMoreOld)
+    ArtworksOfMedium=lt.size(ArtworksMoreOld)
+    return ArtworksMoreOld, ArtworksOfMedium
 
 
 
@@ -761,6 +791,11 @@ def DeptLowerThanGivenDepartment(artwork,department):     #Requerimiento 5
 
 def DeptGreaterThanGivenDepartment(artwork,department):   #Requerimiento 5
     return artwork["Department"] > department
+# ==============================
+# Funcion de comparacion Lab 5
+# ==============================
+def cmpDate(Date1,Date2):
+    return int(Date1['Date'])<int(Date2['Date'])
 
 
 # Funciones de ordenamiento
@@ -771,6 +806,11 @@ def sortArtists(catalog, cmpfunction):
 def sortArtworks(catalog, cmpfunction):
     mso.sort(catalog['artworks'],cmpfunction)
 
+# ==============================
+# Funcion de ordenamiento Lab 5
+# ==============================
+def sortMediumDate(ListaMDLab5):
+    mso.sort(ListaMDLab5,cmpDate)
 
 def sortReq4(final_list):
     mso.sort(final_list, cmpByNumAuthors)
