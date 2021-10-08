@@ -31,21 +31,22 @@ def loadData(catalog, file_size):
     """
     Carga los datos de los archivos y los ordena
     """
-    #loadArtists(catalog, file_size)
+    loadArtists(catalog, file_size)
     loadArtworks(catalog, file_size)
 
     #sortArtists(catalog, model.cmpArtistByBeginDate)
     #sortArtworks(catalog, model.cmpArtworkByDateAcquired)
 
 
-"""
+
 def loadArtists(catalog, file_size):
     
     artistsfile = cf.data_dir + 'Artists-utf8-' + file_size + '.csv'
     input_file = csv.DictReader(open(artistsfile, encoding='utf-8'))
     for artist in input_file:
-        model.addArtist(catalog, artist)
-"""
+        model.addArtistREQ1(catalog, artist)
+        model.IDwithNameREQ2(catalog, artist)
+
 
 def loadArtworks(catalog, file_size):
     """
@@ -56,6 +57,7 @@ def loadArtworks(catalog, file_size):
     input_file = csv.DictReader(open(artworksfile, encoding='utf-8'))
     for artwork in input_file:
         model.AddMediumLab5(catalog, artwork)
+        model.AddArtworksREQ2(catalog,artwork)
 
 
 # Funciones de ordenamiento
@@ -76,19 +78,21 @@ def loadArtworks(catalog, file_size):
 #Funciones de Lab 5
 def REQLab5(catalog,Medium):
     return model.REQLab5(catalog,Medium)
-# Funciones de consulta sobre el catálogo
+
+# ==============================================
+# Funciones de consulta sobre el catalogo
+# ============================================
 
 
-"""
-FUNCIONES DEL RETO 1
-
+#Requerimiento 1
 def REQ1getArtistsRange(catalog, date_initial, date_final):
     return model.getArtistsRangeReq1(catalog, date_initial, date_final)
 
-
+#Requerimiento 2
 def REQ2getArtworksRange(catalog, date_initial, date_final):
     return model.getArtworksInfoReq2(catalog, date_initial, date_final)
 
+""""
 
 def REQ3get_techniquees(catalog,Name):
     return model.getTechniquesReq3(catalog,Name)

@@ -7,10 +7,13 @@ Daniel Hernández Pineda
  """
 
 
+from tabulate import DataRow
 import config as cf
+from datetime import datetime, date
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
+from DISClib.ADT import orderedmap as om
 from DISClib.ADT import queue
 from DISClib.ADT import stack
 from DISClib.Algorithms.Sorting import shellsort as sso
@@ -24,22 +27,43 @@ def newCatalog():
     """
     Inicializa el catálogo de obras y artistas
     """
-    catalog = {"artworks": None}
-
+    catalog = {"artworksLab5": None}
+    catalog = {"artistsREQ1":None}
+    catalog = {"artworksREQ2":None}
+    catalog = {"artistREQ2":None}
 
     """
     Este indice crea un map cuya llave es el autor del libro
     """
-    catalog['artworks'] = mp.newMap(1000,
+    catalog['artworksLab5'] = mp.newMap(1000,
                                    maptype='PROBING',
                                    loadfactor=0.5,
                                    )
+    
+    catalog['artistsREQ1'] = mp.newMap(1000,
+                                   maptype='CHAINING',
+                                   loadfactor=4.0,
+                                   )
+    
+    catalog['artworksREQ2'] = mp.newMap(100000,
+                                   maptype='PROBING',
+                                   loadfactor=0.5,
+                                   )
+    
+    catalog['artistREQ2'] = mp.newMap(100000,
+                                   maptype='PROBING',
+                                   loadfactor=0.5,
+                                   )
+
 
     return catalog
 
 # ==============================================
 # Funciones para agregar informacion al catalogo
 # ============================================
+
+#Creacion de diccionario para lab 5
+
 def newArtworksLab5(title, date, Medium):
     DataNecessary = {'Title': '',
            'Date': '',
@@ -54,10 +78,99 @@ def AddMediumLab5(catalog, artwork):
     "Los datos tienen la siguiente forma: 'key'= Medium, 'value' = Title, Date"
     
     DataForMedium=newArtworksLab5(artwork['Title'],artwork['Date'],artwork['Medium'])
-    mp.put(catalog['artworks'],artwork['ObjectID'],DataForMedium)
+    mp.put(catalog['artworksLab5'],artwork['ObjectID'],DataForMedium)
+
+# Creacion de diccionario para requerimiento 1
+
+def newArtistREQ1( Name, EndDate, Nationality, Gender, BeginDate):
+    
+    "Los datos quedan con la siguiente forma 'key'= Date , 'value'= [Name, EndDate, Nationality, Gender],[....]"
+    
+    DataNecessary = {
+            'Name':'', 
+            'EndDate':'',
+            'Nationality':'',
+            'Gender':'',
+            'BeginDate':'' 
+                  }
+
+    DataNecessary['Name']=Name
+    DataNecessary['EndDate']=EndDate
+    DataNecessary['Nationality']=Nationality
+    DataNecessary['Gender']=Gender
+    DataNecessary['BeginDate']=BeginDate
+    return DataNecessary
+
+def listREQ1( Name, EndDate, Nationality, Gender, BeginDate):
+    MapnREQ1=newArtistREQ1(Name, EndDate, Nationality, Gender, BeginDate)
+    DataNecessary =lt.newList("ARRAY_LIST")   
+    lt.addLast(DataNecessary,MapnREQ1)
+    return DataNecessary
+
+def addArtistREQ1(catalog, artist):
+    DatesAndAuthors=catalog["artistsREQ1"]
+    ExistDate= mp.contains(DatesAndAuthors,artist["BeginDate"])
+    if ExistDate:
+        DataAtREQ1=newArtistREQ1(artist['DisplayName'],artist['EndDate'],artist['Nationality'],artist['Gender'],artist["BeginDate"])
+        entry= mp. get(DatesAndAuthors,artist["BeginDate"])
+        DataOfBeginDate= me.getValue(entry)
+        lt.addLast(DataOfBeginDate,DataAtREQ1)
+        mp.put(DatesAndAuthors,artist["BeginDate"],DataOfBeginDate)
+    else:
+        DataAtREQ1=listREQ1(artist['DisplayName'],artist['EndDate'],artist['Nationality'],artist['Gender'], artist["BeginDate"])
+        mp.put(DatesAndAuthors,artist["BeginDate"],DataAtREQ1)
+    return DatesAndAuthors
+
+# Creacion de diccionario para requerimiento 2
+
+def newArtworkREQ2(Title, DateAcquired, Medium, Dimensions,CreditLine,ConstituentID):
+    """
+    Los datos quedan con la siguiente forma 'key'= DateAcquired , 
+    'value'= [Title, DateAcquired, Medium , CreditLine, ConstituentID],[....]"
+    """
+    DataNecessary = {
+            'Title':'', 
+            'Artist(s)':'',
+            'DateAcquired':'',
+            'Medium':'',
+            'Dimensions':'',
+            'CreditLine':'', 
+            'ConstituentID':''      
+                     }
+    
+    DataNecessary['Title']=Title
+    DataNecessary['DateAcquired']=DateAcquired
+    DataNecessary['Medium']=Medium
+    DataNecessary['Dimensions']=Dimensions
+    DataNecessary['CreditLine']=CreditLine
+    DataNecessary['ConstituentID']=ConstituentID
+    return DataNecessary
+
+def listREQ2(Title, DateAcquired, Medium, Dimensions,CreditLine,ConstituentID):
+    MapnREQ2=newArtworkREQ2(Title, DateAcquired, Medium, Dimensions,CreditLine,ConstituentID)
+    DataNecessary =lt.newList("ARRAY_LIST")   
+    lt.addLast(DataNecessary,MapnREQ2)
+    return DataNecessary    
+
+def AddArtworksREQ2(catalog,artwork):
+    ArtworksInDate=catalog['artworksREQ2']
+    ExistDate= mp.contains(ArtworksInDate, artwork["DateAcquired"])
+    if ExistDate:
+        DataAtREQ2=newArtworkREQ2(artwork["Title"],artwork["DateAcquired"],artwork["Medium"],artwork["Dimensions"],artwork["CreditLine"],artwork["ConstituentID"])
+        entry= mp. get(ArtworksInDate,artwork["DateAcquired"])
+        DataOfDateAcquired= me.getValue(entry)
+        lt.addLast(DataOfDateAcquired,DataAtREQ2)
+        mp.put(ArtworksInDate,artwork["DateAcquired"],DataOfDateAcquired)
+    else:
+        DataAtREQ2=listREQ2(artwork["Title"],artwork["DateAcquired"],artwork["Medium"],artwork["Dimensions"],artwork["CreditLine"],artwork["ConstituentID"])
+        mp.put(ArtworksInDate,artwork["DateAcquired"],DataAtREQ2)
+    return ArtworksInDate
 
 
-
+def IDwithNameREQ2(catalog, artist):
+    "Los datos tienen la siguiente forma: 'key'= ConstituentID, 'value' = DisplayName"
+    
+    mp.put(catalog['artistREQ2'],artist["ConstituentID"],artist["DisplayName"])
 
  
 """"
@@ -114,76 +227,12 @@ def splitAuthorsIDs(authorsIDs):
     return authorsIDs_list
 
 
-def addArtistsNames(catalog, artwork):
-    """
-    Añade en la información de cada obra los nombres de sus autores
-    """
-    artists = catalog["artists"]
-    authors_IDs = artwork["ArtistID"]
-    authors_IDs = splitAuthorsIDs(authors_IDs)
-    authors = ""
-
-    #Revisar cada elemento de la cola de IDs de autores         
-    while lt.size(authors_IDs)>0: #No realiza más de X ciclos
-        authorID = lt.firstElement(authors_IDs)    
-        j = binary_search(artists, authorID, AuthorIDLowerThanGivenID, AuthorIDGreaterThanGivenID)
-        artist = lt.getElement(artists, j)
-        author=artist["Name"]
-
-        if authors == "":                
-            authors = author
-        else:
-            authors += ", " + author
-
-        lt.removeFirst(authors_IDs)
-
-    artwork["ArtistName"] = authors
-
-
-def artists_required(artistID,name,begindate,end,nationality,gender):
-    """
-    Define la información útil para cargar en el catálogo de artistas
-    """
-    artist={"ArtistID":artistID,
-            'Name':name,
-            'BeginDate':begindate,
-            'EndDate':end,
-            'Nationality':nationality,
-            'Gender':gender}
-    return artist
-
-
-def artworks_required(artworkID,title,artistID,date,medium,dimensions,
-                    classification,department,dateacquired,creditline, url,
-                    depth, diameter, height, length, weight, width):
-    """
-    Define la información útil para cargar en el catálogo de obras
-    """
-    artwork={"ArtworkID":artworkID,
-            "Title": title,
-            "ArtistID":artistID,
-            "ArtistName": "",
-            "Date":date,
-            "Medium": medium,
-            "Dimensions": dimensions,
-            "Classification": classification,
-            "Department": department,
-            "DateAcquired": dateacquired,
-            "CreditLine": creditline,
-            "URL": url,
-            "Depth": depth,
-            "Diameter": diameter,
-            "Height": height,
-            "Length": length,
-            "Weight": weight,
-            "Width": width}
-
-    return artwork
-
 
 # ==============================================
+# ==============================================
 # Funciones de consulta
-# ============================================
+# ==============================================
+# ==============================================
 
 def binary_search(lst, value, lowercmpfunction, greatercmpfunction):
     """
@@ -210,9 +259,13 @@ def binary_search(lst, value, lowercmpfunction, greatercmpfunction):
  
     return -1
 
+# ==============================================
+#Funcion de consulta Lab 5
+# ============================================
+
 def REQLab5(catalog,Medium):
     ArtworksMoreOld=lt.newList()
-    MediumOfCatalog=catalog["artworks"]
+    MediumOfCatalog=catalog["artworksLab5"]
     for n in lt.iterator(mp.keySet(MediumOfCatalog)):
         DataAtMoment=mp.get(MediumOfCatalog,n)
         ValueAtMoment=me.getValue(DataAtMoment)
@@ -224,51 +277,78 @@ def REQLab5(catalog,Medium):
     return ArtworksMoreOld, ArtworksOfMedium
 
 
-
-"""
-FUNCIONES DEL RETO 1
-
-"Requerimiento 1"
-def getInitPosReq1(artists, date_initial):
-    pos1 = binary_search(artists, date_initial, BeginDateLowerThanGivenDate, BeginDateGreaterThanGivenDate) 
-    index1 = pos1-1
-    found_pos1 = False
-
-    while (not found_pos1) and index1>0:
-        prev_element = lt.getElement(artists, index1)
-
-        if int(prev_element["BeginDate"]) == date_initial:
-            pos1 -= 1
-            index1 -= 1
-        else:
-            found_pos1 = True
-
-    return pos1
-
+# ==============================================
+#Funcion de consulta requerimiento 1
+# ============================================
 
 def getArtistsRangeReq1(catalog, date_initial, date_final):
-    artists = catalog['artists']
-    pos = getInitPosReq1(artists, date_initial)
-    artists_range = lt.newList()
-    size = lt.size(artists)
+    MapForREQ1=catalog["artistsREQ1"]
+    listFinal=lt.newList("ARRAY_LIST")
+    i=0
+    for i in range(date_initial,(date_final+1)):
+        entry= mp. get(MapForREQ1,str(i))
+        DataOfBeginDate= me.getValue(entry)
+        LargeAtMoment=lt.size(DataOfBeginDate)
+        j=1
+        while j<=LargeAtMoment:
+            Element=lt.getElement(DataOfBeginDate,j)
+            lt.addLast(listFinal,Element)
+            j+=1
+    TotalOfArtists=lt.size(listFinal)
+    
+    return listFinal, TotalOfArtists
 
-    artists_count = 0
+# ==============================================
+#Funcion de consulta requerimiento 2
+# ============================================
 
-    while pos<=size:
-        artist = lt.getElement(artists, pos)
-
-        if (int(artist["BeginDate"])>=date_initial) and (int(artist["BeginDate"])<=date_final):
-            lt.addLast(artists_range, artist)
-            artists_count += 1
+def getArtworksInfoReq2(catalog, date_initial, date_final):
+    ArtworksListFinal=lt.newList("ARRAY_LIST")
+    ArtworksWithDate=catalog["artworksREQ2"]
+    NumberOfArtworksPurchase=0                                 #Corregir cuando no existe una fecha y aparece asi ''
+    for n in lt.iterator(mp.keySet(ArtworksWithDate)):
+        if n == "":
+            DateInThisCase="1111-01-01"
+            dateForCompare=datetime.strptime(DateInThisCase, "%Y-%m-%d")
+        if n != "":
+            dateForCompare=datetime.strptime(n, "%Y-%m-%d")
         
-        elif int(artist["BeginDate"]) > date_final:
-            break
+        if date_initial<=dateForCompare and dateForCompare<=date_final:
+            entry= mp.get(ArtworksWithDate,str(n))
+            DataOfDateAcquired= me.getValue(entry)
+            LargeAtMoment=lt.size(DataOfDateAcquired)
+            j=1
+            while j<=LargeAtMoment:
+                Element=lt.getElement(DataOfDateAcquired,j)
+                Ids=splitAuthorsIDs(Element["ConstituentID"])    #LLista con los IDs
+                Artist=FindDisplayNameREQ2(Ids,catalog)
+                Element["Artist(s)"]=Artist
+                if Element["CreditLine"]=="Purchase":
+                    NumberOfArtworksPurchase+=1
+                lt.addLast(ArtworksListFinal,Element)
+                j+=1
+    NumberOfArtworks=lt.size(ArtworksListFinal)
+    sortDateAcquired(ArtworksListFinal)
+    return ArtworksListFinal,NumberOfArtworks,NumberOfArtworksPurchase
 
-        pos += 1
+def FindDisplayNameREQ2(ListIDs,catalog):
+    i=1
+    LargeOfConstituent=lt.size(ListIDs)
+    MapIDs=catalog["artistREQ2"]
+    ListArtists=lt.newList("ARRAY_LIST")
+    StringArtist=''
+    
+    while i<=LargeOfConstituent:
+        ElementAtMoment=lt.getElement(ListIDs,i)
+        entry= mp.get(MapIDs,ElementAtMoment)
+        DisplayName= me.getValue(entry)
+        i+=1
+        StringArtist=StringArtist+" "+str(DisplayName)
+    lt.addLast(ListArtists,StringArtist)
+        
+    return ListArtists
 
-    return artists_range, artists_count
-
-
+""""
 "Requerimiento 2"
 def binary_searchReq2(lst, value, lowercmpfunction, greatercmpfunction):
     """
@@ -797,11 +877,16 @@ def DeptGreaterThanGivenDepartment(artwork,department):   #Requerimiento 5
 def cmpDate(Date1,Date2):
     return int(Date1['Date'])<int(Date2['Date'])
 
+# ==============================
+# Funcion de comparacion REQ 2
+# ==============================
+
+def cmpDateAcquired(Date1,Date2):
+    return (Date1['DateAcquired'])<(Date2['DateAcquired'])
 
 # Funciones de ordenamiento
 def sortArtists(catalog, cmpfunction):
     mso.sort(catalog['artists'],cmpfunction)
-
 
 def sortArtworks(catalog, cmpfunction):
     mso.sort(catalog['artworks'],cmpfunction)
@@ -814,3 +899,9 @@ def sortMediumDate(ListaMDLab5):
 
 def sortReq4(final_list):
     mso.sort(final_list, cmpByNumAuthors)
+# ==============================
+# Funcion de ordenamiento REQ2
+# ==============================
+def sortDateAcquired(ListREQ2):
+    mso.sort(ListREQ2,cmpDateAcquired)
+
