@@ -9,6 +9,7 @@ Daniel Hernández Pineda
 import config as cf
 import sys
 import controller
+from datetime import datetime, date
 from DISClib.ADT import list as lt
 from DISClib.ADT import queue
 from DISClib.ADT import stack
@@ -29,11 +30,12 @@ def printMenu():
     print("-----------------------------------------")
     print("Requerimientos")
     print("100- Mostrar las n obras más antiguas para un medio específico")
-    #print("10- Consultar Requerimiento 1")
-    #print("20- Consultar Requerimiento 2")
-    #print("30- Consultar Requerimiento 3")
-    #print("40- Consultar Requerimiento 4")
-    #print("50- Consultar Requerimiento 5")
+    print("200- Numero total de obras de una nacionalidad")
+    print("10- Consultar Requerimiento 1")
+    print("20- Consultar Requerimiento 2")
+    print("30- Consultar Requerimiento 3")
+    print("40- Consultar Requerimiento 4")
+    print("50- Consultar Requerimiento 5")
     print("-----------------------------------------")
     print("0- Salir\n")
 
@@ -57,17 +59,17 @@ def loadData(catalog, file_size):
 
 def printFirst(lst, num):
     """
-    #Imprime los primeros num elementos de la lista
-"""
+    Imprime los primeros num elementos de la lista
+    """
     for pos in range(1,num+1):
         print(lt.getElement(lst, pos))
         print("")
-""""
+
 
 def printLast(lst, num):
     """
-    #Imprime los últimos num elementos de la lista.
-"""
+    Imprime los últimos num elementos de la lista.
+    """
     for x in range(num-1, -1,-1):
         pos = lt.size(lst) - x
         print(lt.getElement(lst, pos))
@@ -76,8 +78,8 @@ def printLast(lst, num):
 
 def adjustlenght(text, step):
     """
-    #Inserta renglones en una cadena de caracteres para que se ajuste al formato de una tabla
-"""
+    Inserta renglones en una cadena de caracteres para que se ajuste al formato de una tabla
+    """
     lenght = len(text)
 
     for n in range(step, 20*step + 1, step):
@@ -90,45 +92,41 @@ def adjustlenght(text, step):
 def printReq1Table(lst):
     """
     #Imprime la tabla del Requerimiento 1
-"""
-    headers = ["ConstituentID", "Name", "BeginDate", "EndDate", "Nationality", "Gender"]
+    """
+    headers = ["Name", "BeginDate", "EndDate", "Nationality", "Gender"]
     table = []
 
     for pos in range(1,4):
         artist = lt.getElement(lst, pos)
-        c1 = artist["ArtistID"]
-        c2 = artist["Name"]
-        c3 = artist["BeginDate"]
-        c4 = artist["EndDate"]
+        c1 = artist["Name"]
+        c2 = artist["BeginDate"]
+        c3 = artist["EndDate"]
+        c4 = artist["Nationality"]
         if c4 == "0":
             c4 = "--"
-        c5 = artist["Nationality"]
+        c5 = artist["Gender"]
         if c5 == "":
             c5 = "--"
-        c6 = artist["Gender"]
-        if c6 == "":
-            c6 = "--"
 
-        table.append([c1,c2,c3,c4,c5,c6])
+        table.append([c1,c2,c3,c4,c5])
      
 
     for x in range(2, -1,-1):
         pos = lt.size(lst) - x
-        artist = lt.getElement(lst, pos)
-        c1 = artist["ArtistID"]
-        c2 = artist["Name"]
-        c3 = artist["BeginDate"]
-        c4 = artist["EndDate"]
-        if c4 == "0":
+        artist = lt.getElement(lst, pos)      
+        c1 = artist["Name"]
+        c2 = artist["BeginDate"]
+        c3 = artist["EndDate"]
+        if c3 == "0":
+            c3 = "--"
+        c4 = artist["Nationality"]
+        if c4 == "":
             c4 = "--"
-        c5 = artist["Nationality"]
+        c5 = artist["Gender"]
         if c5 == "":
             c5 = "--"
-        c6 = artist["Gender"]
-        if c6 == "":
-            c6 = "--"
 
-        table.append([c1,c2,c3,c4,c5,c6])
+        table.append([c1,c2,c3,c4,c5])
 
     print(tabulate(table, headers, tablefmt="grid"))
 
@@ -137,39 +135,37 @@ def printReq2Table(lst):
     """
     #Imprime la tabla del Requerimiento 2
 """
-    headers = ['ObjectID','Title','ArtistsNames',"Medium","Dimensions","Date","DateAcquired"]
+    headers = ['Title','ArtistsNames',"DateAcquired","Medium","Dimensions"]
     table = []
 
     if lt.size(lst)>=3:
         for pos in range(1,4):
             lista = lt.getElement(lst, pos)
-            c1 = adjustlenght(lt.getElement(lista, 1), 8)
-            c2 = adjustlenght(lt.getElement(lista, 2), 15)
-            c3 = adjustlenght(lt.getElement(lista, 3), 15)
-            c4 = adjustlenght(lt.getElement(lista, 4), 15)
-            c5 = adjustlenght(lt.getElement(lista, 5), 15)
-            c6 = lt.getElement(lista, 6)
-            c7 = lt.getElement(lista, 7)[0:10]
+            c1 = adjustlenght(lista["Title"], 12)
+            c2 = adjustlenght(lt.getElement(lista["Artist(s)"],1), 18)
+            c3 = adjustlenght(lista["DateAcquired"], 15)
+            c4 = adjustlenght(lista["Medium"], 15)
+            c5 = adjustlenght(lista["Dimensions"], 15)
+            
 
-            table.append([c1,c2,c3,c4,c5,c6,c7])
+            table.append([c1,c2,c3,c4,c5])
      
 
         for x in range(2, -1,-1):
             pos = lt.size(lst) - x
             lista = lt.getElement(lst, pos)
-            c1 = lt.getElement(lista, 1)
-            c2 = adjustlenght(lt.getElement(lista, 2), 15)
-            c3 = adjustlenght(lt.getElement(lista, 3), 30)
-            c4 = adjustlenght(lt.getElement(lista, 4), 20)
-            c5 = adjustlenght(lt.getElement(lista, 5), 20)
-            c6 = lt.getElement(lista, 6)
-            c7 = lt.getElement(lista, 7)[0:10]
+            c1 = adjustlenght(lista["Title"], 12)
+            c2 = adjustlenght(lt.getElement(lista["Artist(s)"],1), 18)
+            c3 = adjustlenght(lista["DateAcquired"], 15)
+            c4 = adjustlenght(lista["Medium"], 15)
+            c5 = adjustlenght(lista["Dimensions"], 15)
+        
 
-            table.append([c1,c2,c3,c4,c5,c6,c7])
+            table.append([c1,c2,c3,c4,c5])
 
     print(tabulate(table, headers, tablefmt="grid"))
 
-
+""""
 def printReq3Table(lst):
     """
     #Imprime la tabla del Requerimiento 3
@@ -298,8 +294,7 @@ while True:
 
     if int(inputs) == 1:
         #file_size = input("Ingrese el sufijo del archivo que desea utilizar (small, large, 10pct...): ")
-        #sort_data = int(input("Si desea ordenar los datos al cargarlos, digite 1. De lo contrario, digite cualquier número: "))
-        file_size = "small"
+        file_size = "large"
 
         #Cargar archivos
         print("\nCargando información de los archivos ....")
@@ -312,27 +307,31 @@ while True:
 
         print("\nTiempo de carga: " + str(running_time) + " milisegundos")
 
-        print('Obras cargadas: ' + str(lt.size(catalog['artworks'])))
+        #print('Obras cargadas: ' + str(lt.size(catalog['artworks'])))
         #print("\nÚltimos 3 artistas:")
         #printLast(catalog["artists"], 3)
         #print("\nÚltimas 3 obras:")
         #printLast(catalog["artworks"], 3)
 
+    # Laboratorio 5
 
     elif int(inputs) == 100:
-        Medium=input("Por favor ingreso el medio o tecnica de interes: ")
+        Medium=input("Por favor ingrese el medio o tecnica de interes: ")
         MediumImportantREQLab5,SizeOfList=controller.REQLab5(catalog,Medium)
         print(Medium+" tiene "+str(SizeOfList)+" obras en total")
         print("Las 3 obras mas antiguas son las siguientes:")
         print(printFirst(MediumImportantREQLab5,3))
 
+    # Laoratorio 6
+    elif int(inputs) == 200:
+        Nationality=input("Por favor ingrese la nacionalidad de interes: ")
+        SizeOfArtworksOfNationality=controller.REQLab6(catalog,Nationality)
+        print("Los "+Nationality+" tienen "+str(SizeOfArtworksOfNationality)+" obras")
 
-    else:
-        sys.exit(0)
+    # Requerimiento 1
 
-    
-    """elif int(inputs) == 10:
-        a_inicial = int(input("Ingrese el año inicial: "))
+    elif int(inputs) == 10:
+        a_initial = int(input("Ingrese el año inicial: "))
         a_final = int(input("Ingrese el año final: "))
 
         #Para pruebas de rendimiento
@@ -340,7 +339,7 @@ while True:
         #a_final = 2022
 
         start_time = process_time()
-        req1, count = controller.REQ1getArtistsRange(catalog, a_inicial, a_final)
+        req1, count = controller.REQ1getArtistsRange(catalog, a_initial, a_final)
         stop_time = process_time()
         running_time = (stop_time - start_time)*1000
 
@@ -349,13 +348,17 @@ while True:
         
         print("\nSe encontraron " + str(count) + " artistas nacidos en el rango dado")
         print("Los primeros y últimos 3 artistas nacidos en el rango fueron:  (se recomienda ampliar la vista de la Terminal para observar mejor la tabla)")
-        printReq1Table(req1)
+        print(printReq1Table(req1))
+    
+    
 
-
+    
     elif int(inputs) == 20:
-        date_initial = input("Ingrese la fecha de adquisición inicial en formato AAAA-MM-DD: ")
-        date_final = input("Ingrese la fecha de adquisición final en formato AAAA-MM-DD: ")
+        a_initial = input("Ingrese la fecha de adquisición inicial en formato AAAA-MM-DD: ")
+        a_final = input("Ingrese la fecha de adquisición final en formato AAAA-MM-DD: ")
 
+        date_initial=datetime.strptime(a_initial, "%Y-%m-%d")
+        date_final=datetime.strptime(a_final, "%Y-%m-%d")
         #Para pruebas de rendimiento
         #date_initial = "1900-01-01"
         #date_final = "2022-12-31"
@@ -368,12 +371,14 @@ while True:
         print("\n\n=============== Requerimiento Número 2 ===============")
         print("Tiempo de ejecución: " + str(running_time) + " milisegundos")
     
-        print("\nSe encontraron " + str(artworks_count) + " obras adquiridas entre " + date_initial + " y " + date_final + ".")
+        print("\nSe encontraron " + str(artworks_count) + " obras adquiridas entre " + a_initial + " y " + a_final + ".")
         print(str(purchase_count) + " fueron adquiridas por compra" + "\n")
         print("Las primeras y últimas 3 compras en el rango fueron:       (se recomienda ampliar la vista de la Terminal para observar mejor la tabla)")
         printReq2Table(req2)
-        
-
+    
+    else:
+        sys.exit(0)    
+    """
     elif int(inputs) == 30:
         Name=input("Por favor ingrese el nombre del artista: ")
         
