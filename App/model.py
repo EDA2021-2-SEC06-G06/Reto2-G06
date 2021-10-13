@@ -37,19 +37,19 @@ def newCatalog():
     Este indice crea un map cuya llave es el autor del libro
     """
     
-    catalog['artworksLab5'] = mp.newMap(1000,
-                                   maptype='PROBING',
-                                   loadfactor=0.5,
+    catalog['artworksLab5'] = mp.newMap(140000,
+                                   maptype='CHAINING',
+                                   loadfactor=4.0,
                                    )
      
-    catalog['NationalityArtistLab6'] = mp.newMap(1000,
-                                   maptype='PROBING',
-                                   loadfactor=0.5,
+    catalog['NationalityArtistLab6'] = mp.newMap(16000,
+                                   maptype='CHAINING',
+                                   loadfactor=4.0,
                                    )
     
     catalog['MapLab6'] = mp.newMap(1000,
-                                   maptype='PROBING',
-                                   loadfactor=0.5,
+                                   maptype='CHAINING',
+                                   loadfactor=4.0,
                                    )
     """
     catalog['artistsREQ1'] = mp.newMap(1000,
@@ -87,7 +87,6 @@ def newArtworksLab5(title, date, Medium):
     return DataNecessary
 
 def AddMediumLab5(catalog, artwork):
-    "Los datos tienen la siguiente forma: 'key'= Medium, 'value' = Title, Date"
     
     DataForMedium=newArtworksLab5(artwork['Title'],artwork['Date'],artwork['Medium'])
     mp.put(catalog['artworksLab5'],artwork['ObjectID'],DataForMedium)
