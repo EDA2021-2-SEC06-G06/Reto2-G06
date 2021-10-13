@@ -26,7 +26,7 @@ def newCatalog():
     """
     Inicializa el catálogo de obras y artistas
     """
-    #catalog = {"artworksLab5": None}
+    catalog = {"artworksLab5": None}
     catalog = {"NationalityArtistLab6'": None}
     catalog = {"MapLab6": None}
     #catalog = {"artistsREQ1":None}
@@ -36,12 +36,12 @@ def newCatalog():
     """
     Este indice crea un map cuya llave es el autor del libro
     """
-    """
+    
     catalog['artworksLab5'] = mp.newMap(1000,
                                    maptype='PROBING',
                                    loadfactor=0.5,
                                    )
-     """
+     
     catalog['NationalityArtistLab6'] = mp.newMap(1000,
                                    maptype='PROBING',
                                    loadfactor=0.5,
@@ -75,7 +75,7 @@ def newCatalog():
 # ============================================
 
 #Creacion de diccionario para lab 5
-"""
+
 def newArtworksLab5(title, date, Medium):
     DataNecessary = {'Title': '',
            'Date': '',
@@ -91,7 +91,7 @@ def AddMediumLab5(catalog, artwork):
     
     DataForMedium=newArtworksLab5(artwork['Title'],artwork['Date'],artwork['Medium'])
     mp.put(catalog['artworksLab5'],artwork['ObjectID'],DataForMedium)
-"""
+
 #Creacion de diccionario para lab 6
 def listLab6(NameArtwork):
     DataNecessary=lt.newList("ARRAY_LIST")

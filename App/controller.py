@@ -56,7 +56,7 @@ def loadArtworks(catalog, file_size):
     artworksfile = cf.data_dir + 'Artworks-utf8-' + file_size + '.csv'
     input_file = csv.DictReader(open(artworksfile, encoding='utf-8'))
     for artwork in input_file:
-        #model.AddMediumLab5(catalog, artwork)
+        model.AddMediumLab5(catalog, artwork)
         #model.AddArtworksREQ2(catalog,artwork)
         model.AddIdsLab6(catalog, artwork)
 
