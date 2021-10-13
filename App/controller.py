@@ -44,9 +44,9 @@ def loadArtists(catalog, file_size):
     artistsfile = cf.data_dir + 'Artists-utf8-' + file_size + '.csv'
     input_file = csv.DictReader(open(artistsfile, encoding='utf-8'))
     for artist in input_file:
-        model.addArtistREQ1(catalog, artist)
-        model.IDwithNameREQ2(catalog, artist)
-
+        #model.addArtistREQ1(catalog, artist)
+        #model.IDwithNameREQ2(catalog, artist)
+        model.FindNationalityArtist(catalog, artist)
 
 def loadArtworks(catalog, file_size):
     """
@@ -56,8 +56,9 @@ def loadArtworks(catalog, file_size):
     artworksfile = cf.data_dir + 'Artworks-utf8-' + file_size + '.csv'
     input_file = csv.DictReader(open(artworksfile, encoding='utf-8'))
     for artwork in input_file:
-        model.AddMediumLab5(catalog, artwork)
-        model.AddArtworksREQ2(catalog,artwork)
+        #model.AddMediumLab5(catalog, artwork)
+        #model.AddArtworksREQ2(catalog,artwork)
+        model.AddIdsLab6(catalog, artwork)
 
 
 # Funciones de ordenamiento
@@ -78,6 +79,9 @@ def loadArtworks(catalog, file_size):
 #Funciones de Lab 5
 def REQLab5(catalog,Medium):
     return model.REQLab5(catalog,Medium)
+#Funciondes de Lab 6
+def REQLab6(catalog,Nationality):
+    return model.REQLab6(catalog,Nationality)
 
 # ==============================================
 # Funciones de consulta sobre el catalogo

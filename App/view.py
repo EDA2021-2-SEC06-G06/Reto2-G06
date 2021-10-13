@@ -30,6 +30,7 @@ def printMenu():
     print("-----------------------------------------")
     print("Requerimientos")
     print("100- Mostrar las n obras más antiguas para un medio específico")
+    print("200- Numero total de obras de una nacionalidad")
     print("10- Consultar Requerimiento 1")
     print("20- Consultar Requerimiento 2")
     print("30- Consultar Requerimiento 3")
@@ -315,11 +316,17 @@ while True:
     # Laboratorio 5
 
     elif int(inputs) == 100:
-        Medium=input("Por favor ingreso el medio o tecnica de interes: ")
+        Medium=input("Por favor ingrese el medio o tecnica de interes: ")
         MediumImportantREQLab5,SizeOfList=controller.REQLab5(catalog,Medium)
         print(Medium+" tiene "+str(SizeOfList)+" obras en total")
         print("Las 3 obras mas antiguas son las siguientes:")
         print(printFirst(MediumImportantREQLab5,3))
+
+    # Laoratorio 6
+    elif int(inputs) == 200:
+        Nationality=input("Por favor ingrese la nacionalidad de interes: ")
+        SizeOfArtworksOfNationality=controller.REQLab6(catalog,Nationality)
+        print("Los "+Nationality+" tienen "+str(SizeOfArtworksOfNationality)+" obras")
 
     # Requerimiento 1
 

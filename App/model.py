@@ -13,7 +13,6 @@ from datetime import datetime, date
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
-from DISClib.ADT import orderedmap as om
 from DISClib.ADT import queue
 from DISClib.ADT import stack
 from DISClib.Algorithms.Sorting import shellsort as sso
@@ -27,35 +26,48 @@ def newCatalog():
     """
     Inicializa el catálogo de obras y artistas
     """
-    catalog = {"artworksLab5": None}
-    catalog = {"artistsREQ1":None}
-    catalog = {"artworksREQ2":None}
-    catalog = {"artistREQ2":None}
+    #catalog = {"artworksLab5": None}
+    catalog = {"NationalityArtistLab6'": None}
+    catalog = {"MapLab6": None}
+    #catalog = {"artistsREQ1":None}
+    #catalog = {"artworksREQ2":None}
+    #catalog = {"artistREQ2":None}
 
     """
     Este indice crea un map cuya llave es el autor del libro
+    """
     """
     catalog['artworksLab5'] = mp.newMap(1000,
                                    maptype='PROBING',
                                    loadfactor=0.5,
                                    )
+     """
+    catalog['NationalityArtistLab6'] = mp.newMap(1000,
+                                   maptype='PROBING',
+                                   loadfactor=0.5,
+                                   )
     
+    catalog['MapLab6'] = mp.newMap(1000,
+                                   maptype='PROBING',
+                                   loadfactor=0.5,
+                                   )
+    """
     catalog['artistsREQ1'] = mp.newMap(1000,
                                    maptype='CHAINING',
                                    loadfactor=4.0,
                                    )
     
-    catalog['artworksREQ2'] = mp.newMap(100000,
+    catalog['artworksREQ2'] = mp.newMap(1000,
                                    maptype='PROBING',
                                    loadfactor=0.5,
                                    )
     
-    catalog['artistREQ2'] = mp.newMap(100000,
+    catalog['artistREQ2'] = mp.newMap(1000,
                                    maptype='PROBING',
                                    loadfactor=0.5,
                                    )
 
-
+     """
     return catalog
 
 # ==============================================
@@ -63,11 +75,11 @@ def newCatalog():
 # ============================================
 
 #Creacion de diccionario para lab 5
-
+"""
 def newArtworksLab5(title, date, Medium):
     DataNecessary = {'Title': '',
            'Date': '',
-           'Medium':'',
+           'Medium': '',
                     }
     DataNecessary['Title']=title
     DataNecessary['Date']=date
@@ -79,9 +91,61 @@ def AddMediumLab5(catalog, artwork):
     
     DataForMedium=newArtworksLab5(artwork['Title'],artwork['Date'],artwork['Medium'])
     mp.put(catalog['artworksLab5'],artwork['ObjectID'],DataForMedium)
+"""
+#Creacion de diccionario para lab 6
+def listLab6(NameArtwork):
+    DataNecessary=lt.newList("ARRAY_LIST")
+    lt.addLast(DataNecessary,NameArtwork)
+    return DataNecessary
+
+def FindNationalityArtist(catalog, artist):
+    "Los datos tienen la siguiente forma: 'key'= Id, 'value' = Nationality"
+    NationalityArtist=catalog["NationalityArtistLab6"]
+    mp.put(NationalityArtist, artist["ConstituentID"], artist["Nationality"])
+    return NationalityArtist
+
+def AddIdsLab6(catalog, artwork):
+    "Los datos tienen la siguiente forma: 'key'= Ids, 'value' = TitleArtwork"
+    MapLab6=catalog["MapLab6"]
+    NationalityArtist=catalog["NationalityArtistLab6"]
+    IDsArtwork=artwork["ConstituentID"]
+    IDsClean=splitAuthorsIDs(IDsArtwork)
+    largeIDsClean=lt.size(IDsClean)
+    if largeIDsClean==1:
+        id=lt.getElement(IDsClean,1)
+        entry= mp.get(NationalityArtist, id)
+        NationalityAtM=me.getValue(entry)
+        ExistNationality= mp.contains(MapLab6, NationalityAtM)
+        if ExistNationality:
+            entry1=mp.get(MapLab6, NationalityAtM)
+            ValueListNames=me.getValue(entry1)
+            lt.addLast(ValueListNames,artwork["Title"])
+            mp.put(MapLab6,NationalityAtM,ValueListNames)
+        else:
+            ListNamesArtwork=listLab6(artwork["Title"])
+            mp.put(MapLab6,NationalityAtM,ListNamesArtwork)
+    
+    elif largeIDsClean>1:
+        i=1
+        while i<=largeIDsClean:
+            id=lt.getElement(IDsClean,i)
+            entry= mp.get(NationalityArtist, id)
+            NationalityAtM=me.getValue(entry)
+            i+=1
+            ExistNationality= mp.contains(MapLab6, NationalityAtM)
+            if ExistNationality:
+                entry1=mp.get(MapLab6, NationalityAtM)
+                ValueListNames=me.getValue(entry1)
+                lt.addLast(ValueListNames,artwork["Title"])
+                mp.put(MapLab6,NationalityAtM,ValueListNames)
+            else:
+                ListNamesArtwork=listLab6(artwork["Title"])
+                mp.put(MapLab6,NationalityAtM,ListNamesArtwork)
+
+    return MapLab6
 
 # Creacion de diccionario para requerimiento 1
-
+"""
 def newArtistREQ1( Name, EndDate, Nationality, Gender, BeginDate):
     
     "Los datos quedan con la siguiente forma 'key'= Date , 'value'= [Name, EndDate, Nationality, Gender],[....]"
@@ -124,10 +188,10 @@ def addArtistREQ1(catalog, artist):
 # Creacion de diccionario para requerimiento 2
 
 def newArtworkREQ2(Title, DateAcquired, Medium, Dimensions,CreditLine,ConstituentID):
-    """
-    Los datos quedan con la siguiente forma 'key'= DateAcquired , 
-    'value'= [Title, DateAcquired, Medium , CreditLine, ConstituentID],[....]"
-    """
+    
+    #Los datos quedan con la siguiente forma 'key'= DateAcquired , 
+    #'value'= [Title, DateAcquired, Medium , CreditLine, ConstituentID],[....]"
+    
     DataNecessary = {
             'Title':'', 
             'Artist(s)':'',
@@ -173,7 +237,8 @@ def IDwithNameREQ2(catalog, artist):
     mp.put(catalog['artistREQ2'],artist["ConstituentID"],artist["DisplayName"])
 
  
-""""
+"""
+"""
 def addArtwork(catalog, artwork):
     
     Se adiciona la obra a la lista de obras
@@ -275,6 +340,17 @@ def REQLab5(catalog,Medium):
     sortMediumDate(ArtworksMoreOld)
     ArtworksOfMedium=lt.size(ArtworksMoreOld)
     return ArtworksMoreOld, ArtworksOfMedium
+
+# ==============================================
+#Funcion de consulta Lab 6
+# ============================================
+
+def REQLab6(catalog, Nationality):
+    MapNationality=catalog["MapLab6"]
+    Entry=mp.get(MapNationality,Nationality)
+    ValueAtMoment=me.getValue(Entry)
+    LargeValue=lt.size(ValueAtMoment)
+    return LargeValue
 
 
 # ==============================================
