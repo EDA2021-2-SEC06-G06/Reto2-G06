@@ -27,9 +27,9 @@ def newCatalog():
     """
     Inicializa el catálogo de obras y artistas
     """
-    catalog = {"artworksLab5": None}
-    catalog = {"NationalityArtistLab6'": None}
-    catalog = {"MapLab6": None}
+    catalog = {"artworksLab5": None,
+               "NationalityArtistLab6'": None,
+               "MapLab6": None}
     #catalog = {"artistsREQ1":None}
     #catalog = {"artworksREQ2":None}
     #catalog = {"artistREQ2":None}
@@ -40,17 +40,17 @@ def newCatalog():
     
     catalog['artworksLab5'] = mp.newMap(140000,
                                    maptype='CHAINING',
-                                   loadfactor=8.0,
+                                   loadfactor=4.0,
                                    )
      
     catalog['NationalityArtistLab6'] = mp.newMap(16000,
                                    maptype='CHAINING',
-                                   loadfactor=8.0,
+                                   loadfactor=4.0,
                                    )
     
     catalog['MapLab6'] = mp.newMap(1000,
                                    maptype='CHAINING',
-                                   loadfactor=8.0,
+                                   loadfactor=4.0,
                                    )
     """
     catalog['artistsREQ1'] = mp.newMap(1000,
@@ -177,68 +177,10 @@ def FindNationalityArtist(catalog, artist):
     return NationalityArtist
 
 
-
-# ==============================================
-# Funciones de consulta
-# ==============================================
-
-def binary_search(lst, value, lowercmpfunction, greatercmpfunction):
-    """
-    Se basó en este código en el que se encuentra en la siguiente página web:
-    https://www.geeksforgeeks.org/python-program-for-binary-search/
-    """
-
-    size = lt.size(lst)
-    low = 0
-    high = size - 1
- 
-    while low <= high:
-        mid = (high + low) // 2
-        indexed_element = lt.getElement(lst, mid)
-        
-        if lowercmpfunction(indexed_element, value):
-            low = mid + 1
- 
-        elif greatercmpfunction(indexed_element, value):
-            high = mid - 1
-
-        else:
-            return mid
- 
-    return -1
-
-
-#Funcion de consulta Lab 5
-def REQLab5(catalog,Medium):
-    ArtworksMoreOld=lt.newList()
-    MediumOfCatalog=catalog["artworksLab5"]
-    for n in lt.iterator(mp.keySet(MediumOfCatalog)):
-        DataAtMoment=mp.get(MediumOfCatalog,n)
-        ValueAtMoment=me.getValue(DataAtMoment)
-        MediumAtMoment=ValueAtMoment['Medium']
-        if MediumAtMoment==Medium:
-            lt.addLast(ArtworksMoreOld,ValueAtMoment)
-    sortMediumDate(ArtworksMoreOld)
-    ArtworksOfMedium=lt.size(ArtworksMoreOld)
-    return ArtworksMoreOld, ArtworksOfMedium
-
-
-#Funcion de consulta Lab 6
-def REQLab6(catalog, Nationality):
-    MapNationality=catalog["MapLab6"]
-    Entry=mp.get(MapNationality,Nationality)
-    ValueAtMoment=me.getValue(Entry)
-    LargeValue=lt.size(ValueAtMoment)
-    return LargeValue
-
-
 """
 # Creacion de diccionario para requerimiento 1
 
-def newArtistREQ1( Name, EndDate, Nationality, Gender, BeginDate):
-    
-    "Los datos quedan con la siguiente forma 'key'= Date , 'value'= [Name, EndDate, Nationality, Gender],[....]"
-    
+def newArtistREQ1( Name, EndDate, Nationality, Gender, BeginDate):    
     DataNecessary = {
             'Name':'', 
             'EndDate':'',
@@ -263,6 +205,8 @@ def listREQ1( Name, EndDate, Nationality, Gender, BeginDate):
 
 
 def addArtistREQ1(catalog, artist):
+    "Los datos quedan con la siguiente forma 'key'= Date , 'value'= [Name, EndDate, Nationality, Gender],[....]"
+
     DatesAndAuthors=catalog["artistsREQ1"]
     ExistDate= mp.contains(DatesAndAuthors,artist["BeginDate"])
     if ExistDate:
@@ -332,6 +276,64 @@ def IDwithNameREQ2(catalog, artist):
 
 """
 
+
+
+# ==============================================
+# Funciones de consulta
+# ==============================================
+
+def binary_search(lst, value, lowercmpfunction, greatercmpfunction):
+    """
+    Se basó en este código en el que se encuentra en la siguiente página web:
+    https://www.geeksforgeeks.org/python-program-for-binary-search/
+    """
+
+    size = lt.size(lst)
+    low = 0
+    high = size - 1
+ 
+    while low <= high:
+        mid = (high + low) // 2
+        indexed_element = lt.getElement(lst, mid)
+        
+        if lowercmpfunction(indexed_element, value):
+            low = mid + 1
+ 
+        elif greatercmpfunction(indexed_element, value):
+            high = mid - 1
+
+        else:
+            return mid
+ 
+    return -1
+
+
+#Funcion de consulta Lab 5
+def REQLab5(catalog,Medium):
+    ArtworksMoreOld=lt.newList()
+    MediumOfCatalog=catalog["artworksLab5"]
+    for n in lt.iterator(mp.keySet(MediumOfCatalog)):
+        DataAtMoment=mp.get(MediumOfCatalog,n)
+        ValueAtMoment=me.getValue(DataAtMoment)
+        MediumAtMoment=ValueAtMoment['Medium']
+        if MediumAtMoment==Medium:
+            lt.addLast(ArtworksMoreOld,ValueAtMoment)
+    sortMediumDate(ArtworksMoreOld)
+    ArtworksOfMedium=lt.size(ArtworksMoreOld)
+    return ArtworksMoreOld, ArtworksOfMedium
+
+
+#Funcion de consulta Lab 6
+def REQLab6(catalog, Nationality):
+    MapNationality=catalog["MapLab6"]
+    Entry=mp.get(MapNationality,Nationality)
+    ValueAtMoment=me.getValue(Entry)
+    LargeValue=lt.size(ValueAtMoment)
+    return LargeValue
+
+
+
+
 # ==============================================
 #Funcion de consulta requerimiento 1
 # ============================================
@@ -341,7 +343,7 @@ def getArtistsRangeReq1(catalog, date_initial, date_final):
     listFinal=lt.newList("ARRAY_LIST")
     i=0
     for i in range(date_initial,(date_final+1)):
-        entry= mp. get(MapForREQ1,str(i))
+        entry= mp.get(MapForREQ1,str(i))
         DataOfBeginDate= me.getValue(entry)
         LargeAtMoment=lt.size(DataOfBeginDate)
         j=1
