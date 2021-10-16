@@ -165,25 +165,34 @@ def printReq2Table(lst):
 
     print(tabulate(table, headers, tablefmt="grid"))
 
-""""
+
 def printReq3Table(lst):
-    """
+    
     #Imprime la tabla del Requerimiento 3
-"""
+
     headers=['Title',"Date","Medium","Dimensions"]
     table=[]
-    SizeOfList=lt.size(lst)
-    for pos in range(SizeOfList):
-        lista = lt.getElement(lst,pos)
-        c1 = adjustlenght(lt.getElement(lista, 1), 18)
-        c2 = adjustlenght(lt.getElement(lista, 2), 12)
-        c3 = adjustlenght(lt.getElement(lista, 3), 18)
-        c4 = adjustlenght(lt.getElement(lista, 4), 18)
-            
-        table.append([c1,c2,c3,c4])
+    if lt.size(lst)>=3:
+        for pos in range(1,4):
+            lista = lt.getElement(lst, pos)
+            c1 = adjustlenght(lt.getElement(lista, 1), 18)
+            c2 = adjustlenght(lt.getElement(lista, 2), 12)
+            c3 = adjustlenght(lt.getElement(lista, 3), 18)
+            c4 = adjustlenght(lt.getElement(lista, 4), 18)
+            table.append([c1,c2,c3,c4])
+        
+        for x in range(2, -1,-1):
+            pos = lt.size(lst) - x
+            lista = lt.getElement(lst, pos)
+            c1 = adjustlenght(lt.getElement(lista, 1), 18)
+            c2 = adjustlenght(lt.getElement(lista, 2), 12)
+            c3 = adjustlenght(lt.getElement(lista, 3), 18)
+            c4 = adjustlenght(lt.getElement(lista, 4), 18)
+            table.append([c1,c2,c3,c4])
+
     print(tabulate(table, headers, tablefmt="grid"))
 
-
+""""
 def printReq4Table(lst):
     """
     #Imprime las tablas del Requerimiento 4
@@ -376,14 +385,13 @@ while True:
         print("Las primeras y últimas 3 compras en el rango fueron:       (se recomienda ampliar la vista de la Terminal para observar mejor la tabla)")
         printReq2Table(req2)
     
-    else:
-        sys.exit(0)    
-    """
+        
+    
     elif int(inputs) == 30:
         Name=input("Por favor ingrese el nombre del artista: ")
         
         start_time = process_time()
-        NumberOfArtworks,TechniqueMoreUsed,NumberOfTechniques,ListOfArtists = controller.REQ3get_techniquees(catalog,Name)
+        NumberOfArtworks,NumberOfTechniques, TechniqueMoreUsed,ListOfArtists = controller.REQ3GetTechniquees(catalog,Name)
         stop_time = process_time()
         running_time = (stop_time - start_time)*1000
         print("\n\n=============== Requerimiento Número 3 ===============")
@@ -393,7 +401,11 @@ while True:
         print("Ademas, tiene "+str(NumberOfTechniques)+" medios o tecnicas en sus trabajos")
         print("La tecnica mas usada es: " +str(TechniqueMoreUsed))
         printReq3Table(ListOfArtists)
-
+    
+    else:
+        sys.exit(0)
+    
+    """
 
     elif int(inputs) == 40:
         start_time = process_time()

@@ -44,9 +44,10 @@ def loadArtists(catalog, file_size):
     artistsfile = cf.data_dir + 'Artists-utf8-' + file_size + '.csv'
     input_file = csv.DictReader(open(artistsfile, encoding='utf-8'))
     for artist in input_file:
-        #model.addArtistREQ1(catalog, artist)
-        #model.IDwithNameREQ2(catalog, artist)
+        model.addArtistREQ1(catalog, artist)
+        model.IDwithNameREQ2(catalog, artist)
         model.FindNationalityArtist(catalog, artist)
+        model.NameIdREQ3(catalog, artist)
 
 def loadArtworks(catalog, file_size):
     """
@@ -57,8 +58,10 @@ def loadArtworks(catalog, file_size):
     input_file = csv.DictReader(open(artworksfile, encoding='utf-8'))
     for artwork in input_file:
         model.AddMediumLab5(catalog, artwork)
-        #model.AddArtworksREQ2(catalog,artwork)
+        model.AddArtworksREQ2(catalog,artwork)
         model.AddIdsLab6(catalog, artwork)
+        model.AddArtworksWidREQ3(catalog,artwork)
+        model.AddTitleAndDataREQ3(catalog,artwork)
 
 
 # Funciones de ordenamiento
@@ -96,11 +99,10 @@ def REQ1getArtistsRange(catalog, date_initial, date_final):
 def REQ2getArtworksRange(catalog, date_initial, date_final):
     return model.getArtworksInfoReq2(catalog, date_initial, date_final)
 
+#Requerimiento 3
+def REQ3GetTechniquees(catalog,Name):
+    return model.GetTechniquesReq3(catalog,Name)
 """"
-
-def REQ3get_techniquees(catalog,Name):
-    return model.getTechniquesReq3(catalog,Name)
-
 
 def REQ4getNationalityCount(catalog):
     final_list = model.getNationalityCountReq4(catalog)
