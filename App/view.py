@@ -270,8 +270,8 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
 
     if int(inputs) == 1:
-        file_size = input("Ingrese el sufijo del archivo que desea utilizar (small, large, 10pct...): ")
-        #file_size = "small"
+        #file_size = input("Ingrese el sufijo del archivo que desea utilizar (small, large, 10pct...): ")
+        file_size = "large"
 
         #Cargar archivos
         print("\nCargando información de los archivos ....")
@@ -281,18 +281,18 @@ while True:
         loadData(catalog, file_size)
         stop_time = process_time()
         running_time = (stop_time - start_time)*1000
-
+        
         print("\nTiempo de carga: " + str(running_time) + " milisegundos")
-
+        
 
     #Requerimiento 1
     elif int(inputs) == 10:
-        a_initial = int(input("Ingrese el año inicial: "))
-        a_final = int(input("Ingrese el año final: "))
+        #a_initial = int(input("Ingrese el año inicial: "))
+        #a_final = int(input("Ingrese el año final: "))
 
         #Para pruebas de rendimiento
-        #a_inicial = 0
-        #a_final = 2022
+        a_initial = 0
+        a_final = 2022
 
         start_time = process_time()
         req1, count = controller.REQ1(catalog, a_initial, a_final)
@@ -317,7 +317,7 @@ while True:
         date_final = "2022-12-31"
 
         start_time = process_time()
-        req2,artworks_count,purchase_count = controller.REQ2getArtworksRange(catalog, date_initial, date_final)
+        req2,artworks_count,purchase_count = controller.REQ2(catalog, date_initial, date_final)
         stop_time = process_time()
         running_time = (stop_time - start_time)*1000
         
@@ -364,7 +364,7 @@ while True:
     elif int(inputs) == 50:
         #department = input("Digite el departamento a transportar: ")
         
-        #Para pruebas
+        #Para pruebas de rendimiento
         department = "Drawings & Prints"
 
         departmentmap = catalog["MapReq5"]

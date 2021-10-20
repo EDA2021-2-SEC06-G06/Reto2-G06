@@ -25,6 +25,8 @@ def newCatalog():
     catalog = {"ConstituentID_Directory": None,
                "MapReq1":None,
                "MapReq2":None,
+               "DatesListReq1": None,
+               "DatesListReq2": None,
                "IdWArtworkREQ3":None,
                "Name-IdREQ3":None,
                "ArtworkAndDataREQ3":None,
@@ -121,6 +123,30 @@ def AddArtworksREQ2(catalog, artwork):
         mp.put(ArtworksDateMap, artwork["DateAcquired"], artworks_list)
 
     return ArtworksDateMap
+
+
+def AddDatesREQ1(catalog):
+    ArtistsDateMap = catalog["MapReq1"]
+    auxiliar_list = mp.keySet(ArtistsDateMap)
+    dates_list = lt.newList("ARRAY_LIST")
+
+    for date in lt.iterator(auxiliar_list):
+        lt.addLast(dates_list, date)
+
+    sortDatesList(dates_list)
+    catalog["DatesListReq1"] = dates_list
+
+
+def AddDatesREQ2(catalog):
+    ArtworksDateMap = catalog["MapReq2"]
+    auxiliar_list = mp.keySet(ArtworksDateMap)
+    dates_list = lt.newList("ARRAY_LIST")
+
+    for date in lt.iterator(auxiliar_list):
+        lt.addLast(dates_list, date)
+
+    sortDatesList(dates_list)
+    catalog["DatesListReq2"] = dates_list
 
 
 def AddArtworksWidREQ3(catalog,artwork):
@@ -335,24 +361,106 @@ def NameIdREQ3(catalog, artist):
 # Funciones de consulta
 # ==============================================
 
+def binary_search(lst, value, lowercmpfunction, greatercmpfunction):
+    """
+    Se basó en este código en el que se encuentra en la siguiente página web:
+    https://www.geeksforgeeks.org/python-program-for-binary-search/
+    """
+
+    size = lt.size(lst)
+    low = 0
+    high = size - 1
+ 
+    while low <= high:
+        mid = (high + low) // 2
+        indexed_element = lt.getElement(lst, mid)
+        
+        if lowercmpfunction(indexed_element, value):
+            low = mid + 1
+ 
+        elif greatercmpfunction(indexed_element, value):
+            high = mid - 1
+
+        else:
+            return mid
+
+        if (low==(high-1)) or (low==high): #Se halla el primer elemento del rango así no haya coincidencia exacta
+            return low
+ 
+    return -1
+
+
 #Requerimiento 1
+
+#Opción que usa mp.contains()
+"""
+def REQ1(catalog, date_initial, date_final):
+    """
+    #Se crea una lista ordenada de los artistas nacidos en el rango de años
+"""
+    DatesArtistsMap = catalog["MapReq1"]
+    listFinal=lt.newList("ARRAY_LIST")
+
+    for i in range(date_initial,(date_final+1)): #Número de ciclos depende de la amplitud del rango
+        if (i<1867) or (i>1995):
+            if mp.contains(DatesArtistsMap, str(i)):
+                entry= mp.get(DatesArtistsMap, str(i))
+                artists_list = me.getValue(entry)
+                artist_list_size = lt.size(artists_list)
+
+                j=1
+                while j<=artist_list_size:               #No más de max(artistas nacidos en un año) ciclos
+                    artist = lt.getElement(artists_list, j)
+                    lt.addLast(listFinal, artist)
+                    j+=1
+        else:
+            entry= mp.get(DatesArtistsMap, str(i))
+            artists_list = me.getValue(entry)
+            artist_list_size = lt.size(artists_list)
+
+            j=1
+            while j<=artist_list_size:               #No más de max(artistas nacidos en un año) ciclos
+                artist = lt.getElement(artists_list, j)
+                lt.addLast(listFinal, artist)
+                j+=1
+
+    TotalOfArtists=lt.size(listFinal)
+    
+    return listFinal, TotalOfArtists
+"""
+
 def REQ1(catalog, date_initial, date_final):
     """
     Se crea una lista ordenada de los artistas nacidos en el rango de años
     """
     DatesArtistsMap = catalog["MapReq1"]
+    dates_list = catalog["DatesListReq1"]
+
+    pos = binary_search(dates_list, str(date_initial), cmpDateLower, cmpDateGreater) #log(num_fechas_de_nacimiento)
+    size = lt.size(dates_list)
     listFinal=lt.newList("ARRAY_LIST")
 
-    for i in range(date_initial,(date_final+1)): #Número de ciclos depende de la amplitud del rango
-        entry= mp.get(DatesArtistsMap, str(i))
-        artists_list = me.getValue(entry)
-        artist_list_size = lt.size(artists_list)
+    #Se parte de la posición inicial encontrada y se recorre hasta que se encuentra una fecha fuera del rango
+    while pos<=size: #Realiza num_fechas_de_nacimiento ciclos en el peor caso
+        date = lt.getElement(dates_list, pos)
 
-        j=1
-        while j<=artist_list_size:               #No más de max(artistas nacidos en un año) ciclos
-            artist = lt.getElement(artists_list, j)
-            lt.addLast(listFinal, artist)
-            j+=1
+        if (date>=str(date_initial)) and (date<=str(date_final)):
+            entry= mp.get(DatesArtistsMap, date)
+            artists_list = me.getValue(entry)
+            artist_list_size = lt.size(artists_list)
+
+            j=1
+            while j<=artist_list_size:               #No más de max(artistas nacidos en un año) ciclos
+                artist = lt.getElement(artists_list, j)
+                lt.addLast(listFinal, artist)
+                j+=1
+
+        elif date>str(date_final):
+            break
+        
+        pos += 1
+
+    #en conjunto, ambos ciclos realizan, en el peor caso, numero_de_artistas ciclos
 
     TotalOfArtists=lt.size(listFinal)
     
@@ -360,14 +468,19 @@ def REQ1(catalog, date_initial, date_final):
 
 
 #Requerimiento 2
-def getArtworksInfoReq2(catalog, date_initial, date_final):
+def REQ2(catalog, date_initial, date_final):
     ArtworksDateMap = catalog["MapReq2"]
+    dates_list = catalog["DatesListReq2"]
+    pos = binary_search(dates_list, date_initial, cmpDateLower, cmpDateGreater) #log(num_fechas_de_adquisición)
 
     ArtworksListFinal=lt.newList("ARRAY_LIST")
-    dates_list = mp.keySet(ArtworksDateMap)    #sort?
+    size = lt.size(dates_list)
     purchase_count=0  
 
-    for date in lt.iterator(dates_list):       #Realiza num_fechas_de_adquisición ciclos
+    #Se parte de la posición inicial encontrada y se recorre hasta que se encuentra una fecha fuera del rango
+    while pos<=size: #Realiza num_fechas_de_adquisición ciclos en el peor caso
+        date = lt.getElement(dates_list, pos)
+
         if (date>=date_initial) and (date<=date_final):
             entry= mp.get(ArtworksDateMap, date)
             artworks_list = me.getValue(entry)
@@ -382,9 +495,13 @@ def getArtworksInfoReq2(catalog, date_initial, date_final):
 
                 lt.addLast(ArtworksListFinal, artwork)
                 j+=1
-                
+
+        elif date>date_final:
+            break
+
+        pos+=1
+
     num_artworks = lt.size(ArtworksListFinal)
-    sortREQ2(ArtworksListFinal)
 
     return ArtworksListFinal, num_artworks, purchase_count
 
@@ -606,6 +723,13 @@ def REQ5(catalog, department):
 # ================================================================
 # Funciones de comparación
 # ================================================================
+def cmpDateLower(date1, date2):                          #Requerimiento 2
+    return date1 < date2
+
+
+def cmpDateGreater(date1, date2):                        #Requerimiento 2
+    return date1 > date2
+
 
 def cmpDateAcquired(artwork1, artwork2):                  #Requerimiento 2
     return artwork1["DateAcquired"]<artwork2["DateAcquired"]
@@ -637,6 +761,10 @@ def cmpArtworksByDate(artwork1,artwork2):                 #Requerimiento 5
 # ==============================
 # Funciones de ordenamiento
 # ==============================
+def sortDatesList(lst):
+    mso.sort(lst, cmpDateLower)
+
+
 def sortREQ2(ListREQ2):
     mso.sort(ListREQ2, cmpDateAcquired)
 

@@ -60,6 +60,8 @@ def loadArtworks(catalog, file_size):
         model.AddTitleAndDataREQ3(catalog,artwork)
         model.AddArtworksREQ4(catalog, artwork)
         model.AddArtworksREQ5(catalog, artwork)
+    model.AddDatesREQ1(catalog)
+    model.AddDatesREQ2(catalog)
 
 
 
@@ -72,8 +74,8 @@ def REQ1(catalog, date_initial, date_final):
     return model.REQ1(catalog, date_initial, date_final)
 
 #Requerimiento 2
-def REQ2getArtworksRange(catalog, date_initial, date_final):
-    return model.getArtworksInfoReq2(catalog, date_initial, date_final)
+def REQ2(catalog, date_initial, date_final):
+    return model.REQ2(catalog, date_initial, date_final)
 
 #Requerimiento 3
 def REQ3GetTechniquees(catalog,Name):
