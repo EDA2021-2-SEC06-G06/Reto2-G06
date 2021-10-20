@@ -43,8 +43,7 @@ def loadArtists(catalog, file_size):
     input_file = csv.DictReader(open(artistsfile, encoding='utf-8'))
     for artist in input_file:
         model.AddIDName(catalog, artist)
-        model.addArtistREQ1(catalog, artist)
-        model.IDwithNameREQ2(catalog, artist)
+        model.AddArtistsDatesREQ1(catalog, artist)
         model.NameIdREQ3(catalog, artist)
         model.AddArtistsNationalitiesREQ4(catalog, artist)  
 
@@ -69,8 +68,8 @@ def loadArtworks(catalog, file_size):
 # ============================================
 
 #Requerimiento 1
-def REQ1getArtistsRange(catalog, date_initial, date_final):
-    return model.getArtistsRangeReq1(catalog, date_initial, date_final)
+def REQ1(catalog, date_initial, date_final):
+    return model.REQ1(catalog, date_initial, date_final)
 
 #Requerimiento 2
 def REQ2getArtworksRange(catalog, date_initial, date_final):

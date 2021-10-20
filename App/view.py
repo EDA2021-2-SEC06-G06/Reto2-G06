@@ -118,8 +118,8 @@ def printReq2Table(lst):
     if lt.size(lst)>=3:
         for pos in range(1,4):
             lista = lt.getElement(lst, pos)
-            c1 = adjustlenght(lista["Title"], 12)
-            c2 = adjustlenght(lt.getElement(lista["Artist(s)"],1), 18)
+            c1 = adjustlenght(lista["Title"], 25)
+            c2 = adjustlenght(lista["ArtistsNames"], 18)
             c3 = adjustlenght(lista["DateAcquired"], 15)
             c4 = adjustlenght(lista["Medium"], 15)
             c5 = adjustlenght(lista["Dimensions"], 15)
@@ -131,8 +131,8 @@ def printReq2Table(lst):
         for x in range(2, -1,-1):
             pos = lt.size(lst) - x
             lista = lt.getElement(lst, pos)
-            c1 = adjustlenght(lista["Title"], 12)
-            c2 = adjustlenght(lt.getElement(lista["Artist(s)"],1), 18)
+            c1 = adjustlenght(lista["Title"], 25)
+            c2 = adjustlenght(lista["ArtistsNames"], 18)
             c3 = adjustlenght(lista["DateAcquired"], 15)
             c4 = adjustlenght(lista["Medium"], 15)
             c5 = adjustlenght(lista["Dimensions"], 15)
@@ -295,7 +295,7 @@ while True:
         #a_final = 2022
 
         start_time = process_time()
-        req1, count = controller.REQ1getArtistsRange(catalog, a_initial, a_final)
+        req1, count = controller.REQ1(catalog, a_initial, a_final)
         stop_time = process_time()
         running_time = (stop_time - start_time)*1000
 
@@ -304,19 +304,17 @@ while True:
         
         print("\nSe encontraron " + str(count) + " artistas nacidos en el rango dado")
         print("Los primeros y últimos 3 artistas nacidos en el rango fueron:  (se recomienda ampliar la vista de la Terminal para observar mejor la tabla)")
-        print(printReq1Table(req1))
+        printReq1Table(req1)
     
     
     #Requerimiento 2
     elif int(inputs) == 20:
-        a_initial = input("Ingrese la fecha de adquisición inicial en formato AAAA-MM-DD: ")
-        a_final = input("Ingrese la fecha de adquisición final en formato AAAA-MM-DD: ")
+        #date_initial = input("Ingrese la fecha de adquisición inicial en formato AAAA-MM-DD: ")
+        #date_final = input("Ingrese la fecha de adquisición final en formato AAAA-MM-DD: ")
 
-        date_initial=datetime.strptime(a_initial, "%Y-%m-%d")
-        date_final=datetime.strptime(a_final, "%Y-%m-%d")
         #Para pruebas de rendimiento
-        #date_initial = "1900-01-01"
-        #date_final = "2022-12-31"
+        date_initial = "1900-01-01"
+        date_final = "2022-12-31"
 
         start_time = process_time()
         req2,artworks_count,purchase_count = controller.REQ2getArtworksRange(catalog, date_initial, date_final)
@@ -326,7 +324,7 @@ while True:
         print("\n\n=============== Requerimiento Número 2 ===============")
         print("Tiempo de ejecución: " + str(running_time) + " milisegundos")
     
-        print("\nSe encontraron " + str(artworks_count) + " obras adquiridas entre " + a_initial + " y " + a_final + ".")
+        print("\nSe encontraron " + str(artworks_count) + " obras adquiridas entre " + date_initial + " y " + date_final + ".")
         print(str(purchase_count) + " fueron adquiridas por compra" + "\n")
         print("Las primeras y últimas 3 compras en el rango fueron:       (se recomienda ampliar la vista de la Terminal para observar mejor la tabla)")
         printReq2Table(req2)
