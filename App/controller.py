@@ -11,11 +11,9 @@ import model
 import csv
 
 
-"""
-El controlador se encarga de mediar entre la vista y el modelo.
-"""
-
-# Inicialización del Catálogo de obras
+# ==============================================
+# Inicialización del catálogo de obras
+# ==============================================
 
 def initCatalog():
     """
@@ -25,71 +23,50 @@ def initCatalog():
     return catalog
 
 
+# ==============================================
 # Funciones para la carga de datos
+# ==============================================
 
 def loadData(catalog, file_size):
     """
-    Carga los datos de los archivos y los ordena
+    Carga los datos de los archivos
     """
     loadArtists(catalog, file_size)
     loadArtworks(catalog, file_size)
 
-    #sortArtists(catalog, model.cmpArtistByBeginDate)
-    #sortArtworks(catalog, model.cmpArtworkByDateAcquired)
-
-
 
 def loadArtists(catalog, file_size):
-    
+    """
+    Carga los artistas del archivo
+    """
     artistsfile = cf.data_dir + 'Artists-utf8-' + file_size + '.csv'
     input_file = csv.DictReader(open(artistsfile, encoding='utf-8'))
     for artist in input_file:
+        model.AddIDName(catalog, artist)
         model.addArtistREQ1(catalog, artist)
         model.IDwithNameREQ2(catalog, artist)
-        model.FindNationalityArtist(catalog, artist)
         model.NameIdREQ3(catalog, artist)
+        model.AddArtistsNationalitiesREQ4(catalog, artist)  
+
 
 def loadArtworks(catalog, file_size):
     """
     Carga las obras del archivo
     """
-    #sortArtists(catalog, model.cmpArtistByAuthorID)
     artworksfile = cf.data_dir + 'Artworks-utf8-' + file_size + '.csv'
     input_file = csv.DictReader(open(artworksfile, encoding='utf-8'))
     for artwork in input_file:
-        model.AddMediumLab5(catalog, artwork)
         model.AddArtworksREQ2(catalog,artwork)
-        model.AddIdsLab6(catalog, artwork)
         model.AddArtworksWidREQ3(catalog,artwork)
         model.AddTitleAndDataREQ3(catalog,artwork)
+        model.AddArtworksREQ4(catalog, artwork)
+        model.AddArtworksREQ5(catalog, artwork)
 
 
-# Funciones de ordenamiento
-
-#def sortArtists(catalog, cmpfunction=model.cmpArtistByBeginDate):
-    """
-    Ordena los artistas según la función de comparación dada
-    """
-    #model.sortArtists(catalog, cmpfunction)
-
-
-#def sortArtworks(catalog, cmpfunction):
-    """
-    Ordena las obras según la función de comparación dada
-    """
-    #model.sortArtworks(catalog, cmpfunction)
-
-#Funciones de Lab 5
-def REQLab5(catalog,Medium):
-    return model.REQLab5(catalog,Medium)
-#Funciondes de Lab 6
-def REQLab6(catalog,Nationality):
-    return model.REQLab6(catalog,Nationality)
 
 # ==============================================
 # Funciones de consulta sobre el catalogo
 # ============================================
-
 
 #Requerimiento 1
 def REQ1getArtistsRange(catalog, date_initial, date_final):
@@ -102,14 +79,11 @@ def REQ2getArtworksRange(catalog, date_initial, date_final):
 #Requerimiento 3
 def REQ3GetTechniquees(catalog,Name):
     return model.GetTechniquesReq3(catalog,Name)
-""""
 
-def REQ4getNationalityCount(catalog):
-    final_list = model.getNationalityCountReq4(catalog)
-    model.sortReq4(final_list)
-    return final_list
+#Requerimiento 4
+def REQ4(catalog):
+    return model.REQ4(catalog)
 
-
-def REQ5moveArtworks(catalog, department):
-    return model.moveArtworksReq5(catalog, department)
-"""
+#Requerimiento 5
+def REQ5(catalog, department):
+    return model.REQ5(catalog, department)
