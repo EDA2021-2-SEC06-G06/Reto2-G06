@@ -30,9 +30,12 @@ def newCatalog():
     catalog = {"artworksLab5": None,
                "NationalityArtistLab6'": None,
                "MapLab6": None}
-    #catalog = {"artistsREQ1":None}
-    #catalog = {"artworksREQ2":None}
-    #catalog = {"artistREQ2":None}
+    catalog = {"artistsREQ1":None}
+    catalog = {"artworksREQ2":None}
+    catalog = {"artistREQ2":None}
+    catalog = {"IdWArtworkREQ3":None,
+               "Name-IdREQ3":None,
+               "ArtworkAndDataREQ3":None}
 
     """
     Este indice crea un map cuya llave es el autor del libro
@@ -52,7 +55,7 @@ def newCatalog():
                                    maptype='CHAINING',
                                    loadfactor=4.0,
                                    )
-    """
+    
     catalog['artistsREQ1'] = mp.newMap(1000,
                                    maptype='CHAINING',
                                    loadfactor=4.0,
@@ -67,8 +70,22 @@ def newCatalog():
                                    maptype='PROBING',
                                    loadfactor=0.5,
                                    )
-
-     """
+    
+    catalog['Name-IdREQ3'] = mp.newMap(1000,
+                                   maptype='PROBING',
+                                   loadfactor=0.5,
+                                   )
+    
+    catalog['IdWArtworkREQ3'] = mp.newMap(1000,
+                                   maptype='PROBING',
+                                   loadfactor=0.5,
+                                   )
+    
+    catalog['ArtworkAndDataREQ3'] = mp.newMap(1000,
+                                   maptype='PROBING',
+                                   loadfactor=0.5,
+                                   )
+    
     return catalog
 
 
@@ -177,7 +194,7 @@ def FindNationalityArtist(catalog, artist):
     return NationalityArtist
 
 
-"""
+
 # Creacion de diccionario para requerimiento 1
 
 def newArtistREQ1( Name, EndDate, Nationality, Gender, BeginDate):    
@@ -274,9 +291,62 @@ def IDwithNameREQ2(catalog, artist):
     
     mp.put(catalog['artistREQ2'],artist["ConstituentID"],artist["DisplayName"])
 
-"""
+#Creacion de diccionario para rquerimiento 3
+def listREQ3(Title):
+    DataNecessary =lt.newList("ARRAY_LIST")
+    lt.addLast(DataNecessary,Title)
+    return DataNecessary    
 
+def NameIdREQ3(catalog, artist):
+    "Los datos tienen la siguiente forma: 'key'=  DisplayName, 'value' = ConstituentID"
 
+    MapNameId=catalog["Name-IdREQ3"]
+    mp.put(MapNameId, artist["DisplayName"], artist["ConstituentID"])
+    return MapNameId
+
+def AddArtworksWidREQ3(catalog,artwork):
+    IdWArtworks=catalog['IdWArtworkREQ3']
+    IDsArtwork=artwork["ConstituentID"]
+    IDsClean=splitAuthorsIDs(IDsArtwork)
+    largeIDsClean=lt.size(IDsClean)
+    if largeIDsClean==1:
+        ExistId= mp.contains(IdWArtworks, lt.getElement(IDsClean, 1))
+        if ExistId:
+            EntryIdArt=mp.get(IdWArtworks,lt.getElement(IDsClean, 1))
+            TitleArtworks=me.getValue(EntryIdArt)
+            lt.addLast(TitleArtworks,artwork["Title"])
+            mp.put(IdWArtworks, lt.getElement(IDsClean, 1), TitleArtworks)
+        else:
+            ListTitle=listREQ3(artwork["Title"])
+            mp.put(IdWArtworks, lt.getElement(IDsClean, 1), ListTitle)
+    
+    elif largeIDsClean>1:
+        i=1
+        while i<=largeIDsClean:
+            id=lt.getElement(IDsClean,i)
+            ExistId= mp.contains(IdWArtworks, id)
+            if ExistId:
+                EntryIdArt=mp.get(IdWArtworks,id)
+                TitleArtworks=me.getValue(EntryIdArt)
+                lt.addLast(TitleArtworks,artwork["Title"])
+                mp.put(IdWArtworks, id, TitleArtworks)
+            else:
+                ListTitle=listREQ3(artwork["Title"])
+                mp.put(IdWArtworks, id, ListTitle)
+            i+=1
+    return IdWArtworks
+def  DataNecessaryREQ3(Title, Date, Medium ,Dimensions):
+    DataNecessary=lt.newList("ARRAY_LIST")
+    lt.addLast(DataNecessary, Title)
+    lt.addLast(DataNecessary, Date)
+    lt.addLast(DataNecessary, Medium)
+    lt.addLast(DataNecessary, Dimensions)
+    return DataNecessary
+
+def AddTitleAndDataREQ3(catalog,artwork):
+    ArtworkAndDataREQ3=catalog["ArtworkAndDataREQ3"]
+    mp.put(ArtworkAndDataREQ3, artwork['Title'], DataNecessaryREQ3(artwork['Title'],artwork['Date'], artwork['Medium'],artwork['Dimensions']))
+    return ArtworkAndDataREQ3
 
 # ==============================================
 # Funciones de consulta
@@ -330,8 +400,6 @@ def REQLab6(catalog, Nationality):
     ValueAtMoment=me.getValue(Entry)
     LargeValue=lt.size(ValueAtMoment)
     return LargeValue
-
-
 
 
 # ==============================================
@@ -404,6 +472,56 @@ def FindDisplayNameREQ2(ListIDs,catalog):
     lt.addLast(ListArtists,StringArtist)
         
     return ListArtists
+
+# ============================================
+#Funcion de consulta requerimiento 3
+# ============================================
+def GetTechniquesReq3(catalog,Name):
+    max=0
+    MediumMoreUsed=''
+    MapMediumData=mp.newMap(100,
+                            maptype='PROBING',
+                            loadfactor=0.5,)
+    i=1
+    MapNameId=catalog["Name-IdREQ3"]
+    MapIdTitle=catalog['IdWArtworkREQ3']
+    MapTitleAndData= catalog["ArtworkAndDataREQ3"]
+    EntryId=mp.get(MapNameId,Name)
+    IdOfArtist=me.getValue(EntryId)
+    EntryIdForTitle=mp.get(MapIdTitle,IdOfArtist)
+    ListOfTitles=me.getValue(EntryIdForTitle)
+    NumberOfArtworks=lt.size(ListOfTitles)
+    while i<=NumberOfArtworks:
+        TitleAtMoment=lt.getElement(ListOfTitles, i)
+        EntryTitleData=mp.get(MapTitleAndData, TitleAtMoment)
+        listTitleData=me.getValue(EntryTitleData)
+        CreateTableHashREQ3(listTitleData,MapMediumData)
+        i+=1
+    
+    NumberOfTechniques=mp.size(MapMediumData)
+    for n in lt.iterator(mp.keySet(MapMediumData)):
+        EntryMediumArt=mp.get(MapMediumData,n)
+        TitleOfArtworks=me.getValue(EntryMediumArt)
+        NumberOfTitleM=lt.size(TitleOfArtworks)
+        if NumberOfTitleM>max:
+            max=NumberOfTitleM
+            MediumMoreUsed=n
+    
+    EntryMediumMoreArt=mp.get(MapMediumData, MediumMoreUsed)
+    listMediumMoreUsed=me.getValue(EntryMediumMoreArt)
+    return NumberOfArtworks, NumberOfTechniques, MediumMoreUsed, listMediumMoreUsed 
+def CreateTableHashREQ3(listTitleData, MapMediumData):
+    Medium=lt.getElement(listTitleData,3)
+    ExistMedium=mp.contains(MapMediumData, Medium)
+    if ExistMedium:
+        EntryMediumData=mp.get(MapMediumData,Medium)
+        ListData=me.getValue(EntryMediumData)
+        lt.addLast(ListData, listTitleData)
+    else:
+        ListForData=lt.newList("ARRAY_LIST")
+        lt.addLast(ListForData,listTitleData)
+        mp.put(MapMediumData,Medium,ListForData)
+    return MapMediumData
 
 
 
