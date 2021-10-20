@@ -270,8 +270,8 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
 
     if int(inputs) == 1:
-        #file_size = input("Ingrese el sufijo del archivo que desea utilizar (small, large, 10pct...): ")
-        file_size = "large"
+        file_size = input("Ingrese el sufijo del archivo que desea utilizar (small, large, 10pct...): ")
+        #file_size = "large"
 
         #Cargar archivos
         print("\nCargando información de los archivos ....")
@@ -287,12 +287,12 @@ while True:
 
     #Requerimiento 1
     elif int(inputs) == 10:
-        #a_initial = int(input("Ingrese el año inicial: "))
-        #a_final = int(input("Ingrese el año final: "))
+        a_initial = int(input("Ingrese el año inicial: "))
+        a_final = int(input("Ingrese el año final: "))
 
         #Para pruebas de rendimiento
-        a_initial = 0
-        a_final = 2022
+        #a_initial = 0
+        #a_final = 2022
 
         start_time = process_time()
         req1, count = controller.REQ1(catalog, a_initial, a_final)
@@ -309,12 +309,12 @@ while True:
     
     #Requerimiento 2
     elif int(inputs) == 20:
-        #date_initial = input("Ingrese la fecha de adquisición inicial en formato AAAA-MM-DD: ")
-        #date_final = input("Ingrese la fecha de adquisición final en formato AAAA-MM-DD: ")
+        date_initial = input("Ingrese la fecha de adquisición inicial en formato AAAA-MM-DD: ")
+        date_final = input("Ingrese la fecha de adquisición final en formato AAAA-MM-DD: ")
 
         #Para pruebas de rendimiento
-        date_initial = "1900-01-01"
-        date_final = "2022-12-31"
+        #date_initial = "1900-01-01"
+        #date_final = "2022-12-31"
 
         start_time = process_time()
         req2,artworks_count,purchase_count = controller.REQ2(catalog, date_initial, date_final)
@@ -362,12 +362,10 @@ while True:
 
     #Requerimiento 5
     elif int(inputs) == 50:
-        #department = input("Digite el departamento a transportar: ")
+        department = input("Digite el departamento a transportar: ")
         
         #Para pruebas de rendimiento
-        department = "Drawings & Prints"
-
-        departmentmap = catalog["MapReq5"]
+        #department = "Drawings & Prints"
 
         start_time = process_time()
         num_artworks,total_cost,total_weight,most_expensive,oldest = controller.REQ5(catalog, department)

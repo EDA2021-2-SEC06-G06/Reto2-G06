@@ -40,8 +40,8 @@ def newCatalog():
                                                    loadfactor=4.0) 
     
     catalog['MapReq1'] = mp.newMap(1000,
-                                   maptype='CHAINING',
-                                   loadfactor=4.0)
+                                   maptype='PROBING',
+                                   loadfactor=0.5)
     
     catalog['MapReq2'] = mp.newMap(1000,
                                    maptype='PROBING',
@@ -127,24 +127,14 @@ def AddArtworksREQ2(catalog, artwork):
 
 def AddDatesREQ1(catalog):
     ArtistsDateMap = catalog["MapReq1"]
-    auxiliar_list = mp.keySet(ArtistsDateMap)
-    dates_list = lt.newList("ARRAY_LIST")
-
-    for date in lt.iterator(auxiliar_list):
-        lt.addLast(dates_list, date)
-
+    dates_list = mp.keySet(ArtistsDateMap)
     sortDatesList(dates_list)
     catalog["DatesListReq1"] = dates_list
 
 
 def AddDatesREQ2(catalog):
     ArtworksDateMap = catalog["MapReq2"]
-    auxiliar_list = mp.keySet(ArtworksDateMap)
-    dates_list = lt.newList("ARRAY_LIST")
-
-    for date in lt.iterator(auxiliar_list):
-        lt.addLast(dates_list, date)
-
+    dates_list = mp.keySet(ArtworksDateMap)
     sortDatesList(dates_list)
     catalog["DatesListReq2"] = dates_list
 
