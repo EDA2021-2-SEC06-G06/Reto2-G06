@@ -145,8 +145,9 @@ def AddDatesREQ2(catalog):
 
 
 #Requerimiento 3
+"El requerimiento tiene la siguiente estructura key:Id, value:[title of artworks]"
 def AddArtworksWidREQ3(catalog,artwork):
-    IdWArtworks=catalog['IdWArtworkREQ3']
+    IdWArtworks=catalog['IdWArtworkREQ3']    #size=n
     IDsArtwork=artwork["ConstituentID"]
     IDsClean=splitAuthorsIDs(IDsArtwork)
     largeIDsClean=lt.size(IDsClean)
@@ -188,6 +189,8 @@ def DataNecessaryREQ3(Title, Date, Medium ,Dimensions):
 
 
 def AddTitleAndDataREQ3(catalog,artwork):
+    "El requerimiento tiene la siguiente estructura key:Title of artwork, value:[title,date,medium,dimensions]"
+    
     ArtworkAndDataREQ3=catalog["ArtworkAndDataREQ3"]
     mp.put(ArtworkAndDataREQ3, artwork['Title'], DataNecessaryREQ3(artwork['Title'],artwork['Date'], artwork['Medium'],artwork['Dimensions']))
     return ArtworkAndDataREQ3
