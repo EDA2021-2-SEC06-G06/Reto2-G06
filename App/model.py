@@ -362,7 +362,7 @@ def NameIdREQ3(catalog, artist):
 # Funciones de consulta
 # ==============================================
 
-def binary_search(lst, value, lowercmpfunction, greatercmpfunction):
+def binary_search(lst, value, lowercmpfunction, greatercmpfunction, req):
     """
     Se basó en este código en el que se encuentra en la siguiente página web:
     https://www.geeksforgeeks.org/python-program-for-binary-search/
@@ -370,23 +370,27 @@ def binary_search(lst, value, lowercmpfunction, greatercmpfunction):
 
     size = lt.size(lst)
     low = 0
-    high = size - 1
+    high = size
  
     while low <= high:
         mid = (high + low) // 2
         indexed_element = lt.getElement(lst, mid)
         
+        if mid==0:
+            return 1
+
         if lowercmpfunction(indexed_element, value):
             low = mid + 1
- 
+            
         elif greatercmpfunction(indexed_element, value):
             high = mid - 1
-
+        
         else:
             return mid
 
-        if (low==(high-1)) or (low==high): #Se halla el primer elemento del rango así no haya coincidencia exacta
-            return low
+        if req == 2:
+            if (low==(high-1)) or (low==high): #Se halla el primer elemento del rango así no haya coincidencia exacta
+                return low
  
     return -1
 
@@ -399,15 +403,15 @@ def REQ1(catalog, date_initial, date_final):
     DatesArtistsMap = catalog["MapReq1"]
     dates_list = catalog["DatesListReq1"]
 
-    pos = binary_search(dates_list, str(date_initial), cmpDateLower, cmpDateGreater) #log(num_fechas_de_nacimiento)
+    pos = binary_search(dates_list, str(date_initial), cmpDateLower, cmpDateGreater, 1) #log(num_fechas_de_nacimiento)
     size = lt.size(dates_list)
     listFinal=lt.newList("ARRAY_LIST")
-
+    
     #Se parte de la posición inicial encontrada y se recorre hasta que se encuentra una fecha fuera del rango
     while pos<=size: #Realiza num_fechas_de_nacimiento ciclos en el peor caso
         date = lt.getElement(dates_list, pos)
 
-        if (date>=str(date_initial)) and (date<=str(date_final)):
+        if (int(date)>=date_initial) and (int(date)<=date_final):
             entry= mp.get(DatesArtistsMap, date)
             artists_list = me.getValue(entry)
             artist_list_size = lt.size(artists_list)
@@ -418,7 +422,7 @@ def REQ1(catalog, date_initial, date_final):
                 lt.addLast(listFinal, artist)
                 j+=1
 
-        elif date>str(date_final):
+        elif int(date)>date_final:
             break
         
         pos += 1
@@ -437,7 +441,7 @@ def REQ2(catalog, date_initial, date_final):
     """
     ArtworksDateMap = catalog["MapReq2"]
     dates_list = catalog["DatesListReq2"]
-    pos = binary_search(dates_list, date_initial, cmpDateLower, cmpDateGreater) #log(num_fechas_de_adquisición)
+    pos = binary_search(dates_list, date_initial, cmpDateLower, cmpDateGreater, 2) #log(num_fechas_de_adquisición)
 
     ArtworksListFinal=lt.newList("ARRAY_LIST")
     size = lt.size(dates_list)
@@ -692,11 +696,11 @@ def REQ5(catalog, department):
 # ================================================================
 # Funciones de comparación
 # ================================================================
-def cmpDateLower(date1, date2):                          #Requerimiento 2
+def cmpDateLower(date1, date2):                          
     return date1 < date2
 
 
-def cmpDateGreater(date1, date2):                        #Requerimiento 2
+def cmpDateGreater(date1, date2):                       
     return date1 > date2
 
 
