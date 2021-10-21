@@ -87,6 +87,15 @@ def AddIDName(catalog, artist):
     return artists_ids_map
 
 
+#Requerimiento 1
+def AddDatesREQ1(catalog):
+    "Añade lista ordenada de fechas de nacimiento al catálogo"
+    ArtistsDateMap = catalog["MapReq1"]
+    dates_list = mp.keySet(ArtistsDateMap)
+    sortDatesList(dates_list)
+    catalog["DatesListReq1"] = dates_list
+
+
 def AddArtistsDatesREQ1(catalog, artist):
     "Los datos quedan con la siguiente forma 'key'= Date , 'value'= lista de artistas"
 
@@ -107,7 +116,9 @@ def AddArtistsDatesREQ1(catalog, artist):
         mp.put(DatesAuthorsMap, artist["BeginDate"], artists_list)
 
 
+#Requerimiento 2
 def AddArtworksREQ2(catalog, artwork):
+    "Los datos quedan con la siguiente forma 'key'= DateAcquired , 'value'= lista de obras"
     ArtworksDateMap=catalog['MapReq2']
     artwork_info, trash = getArtworkInfo(catalog, artwork)
     exists_date= mp.contains(ArtworksDateMap, artwork["DateAcquired"])
@@ -125,20 +136,15 @@ def AddArtworksREQ2(catalog, artwork):
     return ArtworksDateMap
 
 
-def AddDatesREQ1(catalog):
-    ArtistsDateMap = catalog["MapReq1"]
-    dates_list = mp.keySet(ArtistsDateMap)
-    sortDatesList(dates_list)
-    catalog["DatesListReq1"] = dates_list
-
-
 def AddDatesREQ2(catalog):
+    "Añade lista ordenada de fechas de adquisición al catálogo"
     ArtworksDateMap = catalog["MapReq2"]
     dates_list = mp.keySet(ArtworksDateMap)
     sortDatesList(dates_list)
     catalog["DatesListReq2"] = dates_list
 
 
+#Requerimiento 3
 def AddArtworksWidREQ3(catalog,artwork):
     IdWArtworks=catalog['IdWArtworkREQ3']
     IDsArtwork=artwork["ConstituentID"]
@@ -187,8 +193,9 @@ def AddTitleAndDataREQ3(catalog,artwork):
     return ArtworkAndDataREQ3
 
 
+#Requerimiento 4
 def AddArtistsNationalitiesREQ4(catalog, artist):
-    "Los datos tienen la siguiente forma: 'key'= ConstituenID, 'value' = Nationality"
+    "Los datos tienen la siguiente forma: 'key'= ConstituentID, 'value' = Nationality"
     artists_nationalities_map = catalog["NationalityArtistReq4"]
     nationality = artist["Nationality"]
 
@@ -223,6 +230,7 @@ def AddArtworksREQ4(catalog, artwork):
             lt.addLast(artworks_list, artwork_info)       #Actualizar lista de obras
 
 
+#Requerimiento 5
 def AddArtworksREQ5(catalog, artwork):
     "Los datos tienen la siguiente forma: 'key'= Department, 'value' = Lista de obras"
     Map = catalog["MapReq5"]
@@ -272,6 +280,9 @@ def splitAuthorsIDs(authorsIDs):
 
 
 def getArtistInfo(Name, EndDate, Nationality, Gender, BeginDate):    
+    """
+    Se filtra la información deseada de los artistas
+    """
     DataNecessary = {'Name': Name,
                      'BeginDate': BeginDate,
                      'EndDate': EndDate,
@@ -381,44 +392,6 @@ def binary_search(lst, value, lowercmpfunction, greatercmpfunction):
 
 
 #Requerimiento 1
-
-#Opción que usa mp.contains()
-"""
-def REQ1(catalog, date_initial, date_final):
-    """
-    #Se crea una lista ordenada de los artistas nacidos en el rango de años
-"""
-    DatesArtistsMap = catalog["MapReq1"]
-    listFinal=lt.newList("ARRAY_LIST")
-
-    for i in range(date_initial,(date_final+1)): #Número de ciclos depende de la amplitud del rango
-        if (i<1867) or (i>1995):
-            if mp.contains(DatesArtistsMap, str(i)):
-                entry= mp.get(DatesArtistsMap, str(i))
-                artists_list = me.getValue(entry)
-                artist_list_size = lt.size(artists_list)
-
-                j=1
-                while j<=artist_list_size:               #No más de max(artistas nacidos en un año) ciclos
-                    artist = lt.getElement(artists_list, j)
-                    lt.addLast(listFinal, artist)
-                    j+=1
-        else:
-            entry= mp.get(DatesArtistsMap, str(i))
-            artists_list = me.getValue(entry)
-            artist_list_size = lt.size(artists_list)
-
-            j=1
-            while j<=artist_list_size:               #No más de max(artistas nacidos en un año) ciclos
-                artist = lt.getElement(artists_list, j)
-                lt.addLast(listFinal, artist)
-                j+=1
-
-    TotalOfArtists=lt.size(listFinal)
-    
-    return listFinal, TotalOfArtists
-"""
-
 def REQ1(catalog, date_initial, date_final):
     """
     Se crea una lista ordenada de los artistas nacidos en el rango de años
@@ -459,6 +432,9 @@ def REQ1(catalog, date_initial, date_final):
 
 #Requerimiento 2
 def REQ2(catalog, date_initial, date_final):
+    """
+    Se crea una lista ordenada de las obras adquiridas en el rango de fechas
+    """
     ArtworksDateMap = catalog["MapReq2"]
     dates_list = catalog["DatesListReq2"]
     pos = binary_search(dates_list, date_initial, cmpDateLower, cmpDateGreater) #log(num_fechas_de_adquisición)
@@ -667,6 +643,9 @@ def calculateSingularCostReq5(depth, diameter, height, length, weight, width):
 
 
 def addTOP5Req5(info_stack, artworks_list):
+    """
+    Obtiene los primeros 5 elementos de una lista y los guarda en el stack que se pasó por parámetro
+    """
     for i in range(5, 0, -1): 
         element = lt.getElement(artworks_list, i)
         stack.push(info_stack, element)
