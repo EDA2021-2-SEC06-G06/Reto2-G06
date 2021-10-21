@@ -704,10 +704,6 @@ def cmpDateGreater(date1, date2):
     return date1 > date2
 
 
-def cmpDateAcquired(artwork1, artwork2):                  #Requerimiento 2
-    return artwork1["DateAcquired"]<artwork2["DateAcquired"]
-
-
 def cmpByNumAuthors(nationality1, nationality2):          #Requerimiento 4
     return nationality1[1] > nationality2[1]
 
@@ -736,10 +732,6 @@ def cmpArtworksByDate(artwork1,artwork2):                 #Requerimiento 5
 # ==============================
 def sortDatesList(lst):
     mso.sort(lst, cmpDateLower)
-
-
-def sortREQ2(ListREQ2):
-    mso.sort(ListREQ2, cmpDateAcquired)
 
 
 def sortREQ4(lst):
